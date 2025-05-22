@@ -42,7 +42,7 @@ export default function ToggleMode({
       <button
         onClick={() => setMode("daily")}
         className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "daily" ? "text-[#eee]" : "text-[#181818]"
+          mode === "daily" ? "text-[#181818]" : "text-[#181818]"
         }`}
       >
         Modo Diário
@@ -51,7 +51,7 @@ export default function ToggleMode({
       <button
         onClick={() => setMode("free")}
         className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "livre" ? "text-[#eee]" : "text-[#181818]"
+          mode === "livre" ? "text-[#181818]" : "text-[#181818]"
         }`}
       >
         Modo Livre

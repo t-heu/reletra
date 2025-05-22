@@ -11,6 +11,7 @@ import HowToPlay from "../components/how-to-play"
 import Footer from "../components/footer"
 import Header from "../components/header"
 
+import validWords from "../validWords.json";
 import {generateDailyWord, generateRandomWord} from "../utils/generateWords"
 import {formatRemainingTime} from "../utils/formatRemainingTime "
 
@@ -29,6 +30,7 @@ export default function Page() {
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
+  const wordList = (validWords as {words: string[]}).words;
 
   // Inicializa o jogo
   useEffect(() => {
@@ -107,6 +109,11 @@ export default function Page() {
     const palpiteOriginal = guess.toUpperCase();
     const palpiteNormalizado = removeAccents(palpiteOriginal);
     const palavraNormalizada = removeAccents(word);
+
+    // 🛑 Bloqueia se palavra não estiver na lista
+    if (!wordList.includes(palpiteOriginal)) {
+      return;
+    }
 
     if (attempts.includes(palpiteOriginal) || attempts.includes(word)) {
       setGuess("");
