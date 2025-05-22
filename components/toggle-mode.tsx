@@ -26,12 +26,12 @@ export default function ToggleMode({
   return (
     <div
       ref={containerRef}
-      className="relative flex gap-2 mb-4 justify-center rounded-lg bg-[#222] p-1 w-fit mx-auto"
+      className="relative flex gap-2 mb-4 justify-center rounded-lg border-2 border-[#222] p-1 w-fit mx-auto"
       style={{ width: "max-content" }}
     >
       {/* Bolinha móvel */}
       <div
-        className="absolute top-0 bottom-0 bg-[#00c67c] rounded-lg transition-all duration-300 text-[#181818]"
+        className="absolute top-0 bottom-0 bg-[#67876e] rounded-lg transition-all duration-300"
         style={{
           left: posLeft,
           width: width,
@@ -41,8 +41,8 @@ export default function ToggleMode({
 
       <button
         onClick={() => setMode("daily")}
-        className={`relative z-10 px-6 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "daily" ? "text-[#181818]" : "text-gray-300"
+        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+          mode === "daily" ? "text-[#eee]" : "text-[#181818]"
         }`}
       >
         Modo Diário
@@ -50,8 +50,8 @@ export default function ToggleMode({
 
       <button
         onClick={() => setMode("free")}
-        className={`relative z-10 px-6 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "livre" ? "text-[#181818]" : "text-gray-300"
+        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+          mode === "livre" ? "text-[#eee]" : "text-[#181818]"
         }`}
       >
         Modo Livre
