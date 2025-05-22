@@ -20,7 +20,7 @@ export const renderKeyboard = ({
     return (
       <div className="flex flex-col items-center gap-1 mt-4 w-full px-2">
         {linhas.map((linha, i) => (
-          <div key={i} className="flex justify-center gap-1 w-full max-w-[500px] flex-nowrap overflow-x-auto">
+          <div key={i} className="flex flex-wrap justify-center gap-1 w-full max-w-[500px]">
             {linha.map((letra) => {
               let bgColor = "bg-[#e5e7eb] border border-[#9ca3af]"
               let textColor = "text-black"

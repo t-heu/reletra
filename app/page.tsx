@@ -8,6 +8,7 @@ import {renderKeyboard} from "../components/render-keyboard"
 import ToggleMode from "../components/toggle-mode"
 import renderLetter from "../components/renderLetter"
 import HowToPlay from "../components/how-to-play"
+import Footer from "../components/footer"
 
 import {generateDailyWord, generateRandomWord} from "../utils/generateWords"
 import {formatRemainingTime} from "../utils/formatRemainingTime "
@@ -166,9 +167,9 @@ export default function Page() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 flex justify-center">
+    <div className="container mx-auto px-4 py-4 flex justify-center">
       {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
-      <div className="w-500 px-4">
+      <div className="w-full max-w-[500px] px-2 sm:px-4">
         {/* Header */}
         <div className="mb-4">
           <h2 className="text-center text-2xl font-bold text-[#111] mb-2">{mode === 'daily' ? 'Palavra do Dia' : 'Palavra Livre'}</h2>
@@ -207,7 +208,7 @@ export default function Page() {
             <X className="h-5 w-5 mt-1 text-red-600" />
             <div>
               <h3 className="font-semibold">Fim de Jogo</h3>
-              <p>Você não isCorrect a palavra do dia. Tente novamente amanhã!</p>
+              <p>Você não acertou a palavra do dia. Tente novamente amanhã!</p>
             </div>
           </div>
         )}
@@ -275,6 +276,8 @@ export default function Page() {
           <span>{attempts.length}/6 tentativas</span>
           <span>{currentDate}</span>
         </div>
+
+        <Footer />
       </div>
     </div>
   )
