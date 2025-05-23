@@ -31,7 +31,7 @@ export default function ToggleMode({
     >
       {/* Bolinha móvel */}
       <div
-        className="absolute top-0 bottom-0 bg-[#67876e] rounded-lg transition-all duration-300"
+        className="absolute top-0 bottom-0 bg-[#16a34a] rounded-lg transition-all duration-300"
         style={{
           left: posLeft,
           width: width,
@@ -41,7 +41,7 @@ export default function ToggleMode({
 
       <button
         onClick={() => setMode("daily")}
-        className={`font-bebas relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
           mode === "daily" ? "text-[#eee]" : "text-[#eee]"
         }`}
       >
@@ -50,7 +50,7 @@ export default function ToggleMode({
 
       <button
         onClick={() => setMode("free")}
-        className={`font-bebas relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
           mode === "livre" ? "text-[#eee]" : "text-[#eee]"
         }`}
       >

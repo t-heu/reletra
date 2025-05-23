@@ -4,7 +4,14 @@ const removeAccents = (str: string) =>
 const renderLetter = (tentativa: string, index: number, letraIndex: number, word: any) => {
   const letra = tentativa[letraIndex]
 
-  const highlightClasses = "font-code flex items-center justify-center font-bold transition-none text-white text-lg w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 text-xl sm:text-2xl md:text-3xl";
+  const highlightClasses =
+    "font-archivo flex items-center justify-center font-bold transition-none text-white text-xl sm:text-2xl";
+
+  const dynamicStyle = {
+    width: `clamp(30px, ${100 / word.length}vw, 50px)`,
+    height: `clamp(30px, ${100 / word.length}vw, 50px)`,
+    fontSize: `clamp(1rem, ${6 / word.length}vw, 2rem)`
+  };
 
   if (!letra) {
     return <div key={`${index}-${letraIndex}`} className={highlightClasses} />
@@ -22,7 +29,7 @@ const renderLetter = (tentativa: string, index: number, letraIndex: number, word
 
   // Retorna a div com a cor certa e letra
   return (
-    <div key={`${index}-${letraIndex}`} className={`${highlightClasses} ${colorClasses}`}>
+    <div key={`${index}-${letraIndex}`} style={dynamicStyle} className={`${highlightClasses} ${colorClasses}`}>
       {letra}
     </div>
   )

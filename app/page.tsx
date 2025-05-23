@@ -199,16 +199,21 @@ export default function Page() {
           </div>
 
           {/* Grid de letras */}
-          <div className="grid gap-1 mb-4 w-full place-items-center">
+          <div className="grid gap-1 sm:gap-2 mb-4 w-full place-items-center">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="flex gap-1">
+              <div key={index} className="flex gap-1 sm:gap-2 justify-center">
                 {Array.from({ length: word.length }).map((_, letraIndex) =>
                   attempts[index] ? (
                     renderLetter(attempts[index], index, letraIndex, word)
                   ) : (
                     <div
                       key={`${index}-${letraIndex}`}
-                      className="font-archivo flex items-center justify-center font-bold transition-none text-white border-2 border-[#333] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 text-xl sm:text-2xl md:text-3xl"
+                      className="font-archivo flex items-center justify-center font-bold transition-none text-white border-2 border-[#333] text-xl sm:text-2xl"
+                      style={{
+                        width: `clamp(30px, ${100 / word.length}vw, 50px)`,
+                        height: `clamp(30px, ${100 / word.length}vw, 50px)`,
+                        fontSize: `clamp(1rem, ${6 / word.length}vw, 2rem)`
+                      }}
                     />
                   )
                 )}

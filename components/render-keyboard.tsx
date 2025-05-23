@@ -69,7 +69,7 @@ function Key({
           ? "w-[48px] sm:w-[56px] md:w-[64px] lg:w-[72px]" 
           : "w-[32px] sm:w-[36px] md:w-[40px] lg:w-[44px]"
         }
-        h-10 sm:h-12 md:h-14 lg:h-16
+        h-12 sm:h-14 md:h-16 lg:h-18
         text-sm sm:text-base md:text-lg lg:text-xl
         flex items-center justify-center font-archivo
       `}
