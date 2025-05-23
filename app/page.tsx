@@ -175,6 +175,18 @@ export default function Page() {
     setExistingLetters(new Set());
   }
 
+  const feedbackByAttempt: Record<number, string> = {
+      1: "UAU!",
+      2: "IMPRESSIONANTE!",
+      3: "ÓTIMO!",
+      4: "BOM TRABALHO!",
+      5: "DEU CERTO!",
+      6: "QUASE!",
+    };
+
+  const getFeedback = (attempts: number) =>
+    feedbackByAttempt[attempts] || "Boa!";
+
   return (
     <>
       <Header howToPlay={setShowHowToPlay} mode={mode} nextWord={nextWord} />
@@ -186,29 +198,8 @@ export default function Page() {
             <ToggleMode mode={mode} setMode={setMode} />
           </div>
 
-          {/* Alert de acerto */}
-          {isCorrect && (
-            <div className="mb-4 border border-green-200 bg-green-50 text-green-800 p-4 rounded-lg flex items-start gap-3">
-              <Check className="h-5 w-5 mt-1 text-green-600" />
-              <div>
-                <h3 className="font-semibold">Parabéns!</h3>
-                <p>Você acertou a palavra do dia em {attempts.length} tentativas!</p>
-              </div>
-            </div>
-          )}
-
-          {lose && (
-            <div className="mb-4 border border-red-200 bg-red-50 text-red-800 p-4 rounded-lg flex items-start gap-3">
-              <X className="h-5 w-5 mt-1 text-red-600" />
-              <div>
-                <h3 className="font-semibold">Fim de Jogo</h3>
-                <p>Você não acertou a palavra do dia. Tente novamente amanhã!</p>
-              </div>
-            </div>
-          )}
-
           {/* Grid de letras */}
-          <div className="grid gap-2 mb-4 w-full place-items-center">
+          <div className="grid gap-1 mb-4 w-full place-items-center">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="flex gap-1">
                 {Array.from({ length: word.length }).map((_, letraIndex) =>
@@ -217,13 +208,33 @@ export default function Page() {
                   ) : (
                     <div
                       key={`${index}-${letraIndex}`}
-                      className="p-2 h-12 w-12 sm:h-16 sm:w-16 font-bold border-2 border-[#222]"
-                    ></div>
+                      className="font-archivo flex items-center justify-center font-bold transition-none text-white border-2 border-[#333] w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 text-xl sm:text-2xl md:text-3xl"
+                    />
                   )
                 )}
               </div>
             ))}
           </div>
+
+          {/* Alert de acerto */}
+          {(isCorrect || lose) && (
+            <div className="justify-center mb-4 flex items-start gap-3">
+              <h3
+                className={`font-semibold p-3 rounded-lg ${
+                  isCorrect ? 'bg-[#16a34a] text-white' : 'bg-[#111] text-white'
+                }`}
+              >
+                {isCorrect ? (
+                  <>
+                    <span className="block text-xl">{getFeedback(attempts.length)}</span>
+                    <span className="block text-sm">Você acertou a palavra do dia em {attempts.length} tentativa{attempts.length > 1 ? 's' : ''}!</span>
+                  </>
+                ) : (
+                  'QUE PENA'
+                )}
+              </h3>
+            </div>
+          )}
 
           {/* Input de guess */}
           {!isCorrect && !lose && (
@@ -235,7 +246,7 @@ export default function Page() {
                 disabled
                 maxLength={word.length}
                 placeholder={`palavra de ${word.length} letras`}
-                className="w-10/12 border-2 border-[#222] rounded-md px-3 py-2 text-center uppercase focus:outline-none text-[#111] font-bold"
+                className="w-10/12 bg-[#222] border-2 border-[#333] rounded-md px-3 py-2 text-center uppercase focus:outline-none text-[#16a34a] font-bold"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && guess.length === word.length) {
                     checkGuess();
@@ -264,11 +275,6 @@ export default function Page() {
             checkGuess,
             word
           })}
-
-          <div className="flex justify-between text-sm text-[#545454] mt-4">
-            <span>{attempts.length}/6 tentativas</span>
-            <span>{currentDate}</span>
-          </div>
         </div>
       </div>
 

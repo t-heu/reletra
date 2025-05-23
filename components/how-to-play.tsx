@@ -3,9 +3,9 @@ import React from "react";
 export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-gray-900">
+      <div className="bg-[#222] w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-white">
         <button
-          className="absolute top-4 right-4 text-xl font-bold text-gray-500 hover:text-black"
+          className="absolute top-4 right-4 text-xl font-bold text-white hover:text-black"
           onClick={onClose}
         >
           ×
@@ -65,7 +65,7 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
           </p>
         </div>
 
-        <p className="text-xs text-gray-600 mt-4">
+        <p className="text-xs text-gray-200 mt-4">
           Um novo desafio é lançado diariamente à meia-noite.
         </p>
       </div>

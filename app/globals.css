@@ -1,10 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Rubik:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #eee;
+  background-color: #1E1E1E;
 }
 
 @layer utilities {
@@ -142,8 +142,5 @@ body {
   font-size: 14px;
   border: 2px solid rgb(245, 245, 250);
   color: rgb(0, 0, 0);
-  font-family: i-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;;
   font-weight: 600;
 }

@@ -29,17 +29,17 @@ function Key({
 }: KeyProps) {
   const isDelete = letra === "DELETE";
 
-  let bgColor = "bg-gray-100 border border-[#9ca3af]";
-  let textColor = "text-black";
+  let bgColor = "bg-[#d3d6da] border border-[#1f1b24]";
+  let textColor = "text-[#1f1b24]";
 
   if (correctLetters.has(letra)) {
-    bgColor = "bg-green-500";
+    bgColor = "bg-[#16a34a]";
     textColor = "text-white";
   } else if (existingLetters.has(letra)) {
-    bgColor = "bg-yellow-400";
+    bgColor = "bg-[#eab308]";
     textColor = "text-white";
   } else if (wrongLetters.has(letra)) {
-    bgColor = "bg-gray-500";
+    bgColor = "bg-[#787c7e]";
     textColor = "text-white";
   }
 
@@ -63,13 +63,18 @@ function Key({
     <button
       onClick={handleClick}
       disabled={disabled}
-      className={`
-        ${bgColor} ${textColor} rounded text-sm font-bold active:scale-95 transition-all
-        ${isSpecial ? "px-2 w-[48px] sm:w-[64px]" : "w-[28px] sm:w-[36px]"}
-        h-10 sm:h-12 flex items-center justify-center
+      className={`${letra === "ENTER" && "text-xs"}
+        ${bgColor} ${textColor} rounded font-bold active:scale-95 transition-all
+        ${isSpecial 
+          ? "w-[48px] sm:w-[56px] md:w-[64px] lg:w-[72px]" 
+          : "w-[32px] sm:w-[36px] md:w-[40px] lg:w-[44px]"
+        }
+        h-10 sm:h-12 md:h-14 lg:h-16
+        text-sm sm:text-base md:text-lg lg:text-xl
+        flex items-center justify-center font-archivo
       `}
     >
-      {isDelete ? <Delete className="w-4 h-4 sm:w-5 sm:h-5" /> : letra}
+      {isDelete ? <Delete className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> : letra}
     </button>
   );
 }
@@ -119,7 +124,7 @@ export const renderKeyboard = ({
       </div>
 
       {/* Linha 2 com indentação */}
-      <div className="flex justify-center gap-[4px] mt-[4px]">
+      <div className="flex justify-center gap-[4px] mt-[2px]">
         <div className="w-[6px] sm:w-[12px]" />
         {"ASDFGHJKL".split("").map((letra) => (
           <Key
@@ -139,7 +144,7 @@ export const renderKeyboard = ({
       </div>
 
       {/* Linha 3 com ENTER e DELETE */}
-      <div className="flex justify-center gap-[4px] mt-[4px]">
+      <div className="flex justify-center gap-[4px] mt-[2px]">
         <Key
           letra="ENTER"
           isSpecial

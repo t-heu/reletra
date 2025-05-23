@@ -26,7 +26,7 @@ export default function ToggleMode({
   return (
     <div
       ref={containerRef}
-      className="relative flex gap-2 mb-4 justify-center rounded-lg border-2 border-[#222] p-1 w-fit mx-auto"
+      className="relative flex gap-2 mb-4 justify-center rounded-lg border-2 border-[#333] p-1 w-fit mx-auto"
       style={{ width: "max-content" }}
     >
       {/* Bolinha móvel */}
@@ -41,8 +41,8 @@ export default function ToggleMode({
 
       <button
         onClick={() => setMode("daily")}
-        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "daily" ? "text-[#181818]" : "text-[#181818]"
+        className={`font-bebas relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+          mode === "daily" ? "text-[#eee]" : "text-[#eee]"
         }`}
       >
         Modo Diário
@@ -50,8 +50,8 @@ export default function ToggleMode({
 
       <button
         onClick={() => setMode("free")}
-        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "livre" ? "text-[#181818]" : "text-[#181818]"
+        className={`font-bebas relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+          mode === "livre" ? "text-[#eee]" : "text-[#eee]"
         }`}
       >
         Modo Livre
