@@ -4,8 +4,8 @@
   "description": "Desletra é um jogo de adivinhação de palavras inspirado no clássico como Wordle, mas com um toque único. Nele, você deve descobrir uma palavra secreta digitando palpites e analisando as letras corretas, existentes ou ausentes.",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#fff",
-  "theme_color": "#fff",
+  "background_color": "#020817",
+  "theme_color": "#020817",
   "orientation": "portrait",
   "icons": [
     {

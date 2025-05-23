@@ -10,7 +10,7 @@ interface CardProps {
 function Card({ children, className = '' }: CardProps) {
   return (
     <div
-      className={`bg-[#111] border border-white rounded-md p-6 shadow-sm ${className}`}
+      className={`bg-[#111] border border-[#1e293b] rounded-md p-6 shadow-sm ${className}`}
     >
       {children}
     </div>
@@ -85,6 +85,15 @@ function Badge({ children, className = '' }: BadgeProps) {
 export default function ChangelogPage() {
   const changelog = [
     {
+      version: "v1.1.0",
+      date: "23 de Maio, 2025",
+      description: "Lançamento com novo visual e verificação aprimorada de palavras com acento.",
+      changes: [
+        { type: "new", text: "Novo design" },
+        { type: "fix", text: "Funcionalidades de verificação de palavra com acentos" },
+      ],
+    },
+    {
       version: "v1.0.0",
       date: "21 de Maio, 2025",
       description: "Lançamento inicial",
@@ -96,10 +105,10 @@ export default function ChangelogPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#eee] text-black p-4">
+    <div className="min-h-screen bg-[#020817] text-white p-4">
       <div className="max-w-3xl mx-auto py-8">
         <Link href="/">
-          <button className="flex items-center text-black hover:text-black hover:bg-white rounded-md px-4 py-2">
+          <button className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </button>
@@ -107,7 +116,7 @@ export default function ChangelogPage() {
 
         <div className="space-y-2 text-center mb-10">
           <h1 className="text-4xl font-bold mt-6 mb-2 text-center">Changelogs</h1>
-          <p className="text-black">Histórico de atualizações e melhorias do nosso produto</p>
+          <p className="text-white">Histórico de atualizações e melhorias do nosso produto</p>
         </div>
 
         <div className="space-y-8">

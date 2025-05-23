@@ -1,61 +1,54 @@
-"use client"
+import { HTMLAttributes } from "react"
 
-import { useState, useEffect, useRef } from "react";
+interface SwitchProps extends HTMLAttributes<HTMLButtonElement> {
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+  id?: string
+}
 
-export default function ToggleMode({
-  setMode,
-  mode
-}: any) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [posLeft, setPosLeft] = useState(0);
-  const [width, setWidth] = useState(0);
+export function Switch({ checked, onCheckedChange, id, ...props }: SwitchProps) {
+  return (
+    <button
+      id={id}
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onCheckedChange(!checked)}
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ${
+        checked ? "bg-[#1e293b]" : "bg-[#eee]"
+      }`}
+      {...props}
+    >
+      <span
+        className={`inline-block h-5 w-5 transform rounded-full bg-[#020817] shadow transition-transform duration-200 ${
+          checked ? "translate-x-5" : "translate-x-1"
+        }`}
+      />
+    </button>
+  )
+}
 
-  // Atualiza posição e largura da bolinha quando muda o mode
-  useEffect(() => {
-    if (!containerRef.current) return;
+type Props = {
+  mode: "daily" | "free"
+  setMode: (mode: "daily" | "free") => void
+}
 
-    const buttons = containerRef.current.querySelectorAll("button");
-    const index = mode === "daily" ? 0 : 1;
+export default function ToggleMode({ mode, setMode }: Props) {
+  const modoLivre = mode === "free"
 
-    if (buttons[index]) {
-      setPosLeft(buttons[index].offsetLeft);
-      setWidth(buttons[index].offsetWidth);
-    }
-  }, [mode]);
+  function alternarModo(checked: boolean) {
+    setMode(checked ? "free" : "daily")
+  }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex gap-2 mb-4 justify-center rounded-lg border-2 border-[#333] p-1 w-fit mx-auto"
-      style={{ width: "max-content" }}
-    >
-      {/* Bolinha móvel */}
-      <div
-        className="absolute top-0 bottom-0 bg-[#16a34a] rounded-lg transition-all duration-300"
-        style={{
-          left: posLeft,
-          width: width,
-          margin: "4px 0",
-        }}
-      ></div>
-
-      <button
-        onClick={() => setMode("daily")}
-        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "daily" ? "text-[#eee]" : "text-[#eee]"
-        }`}
-      >
-        Modo Diário
-      </button>
-
-      <button
-        onClick={() => setMode("free")}
-        className={`relative z-10 px-4 py-2 rounded-lg font-semibold transition-colors duration-300 ${
-          mode === "livre" ? "text-[#eee]" : "text-[#eee]"
-        }`}
-      >
-        Modo Livre
-      </button>
+    <div className="flex items-center justify-center gap-2 mb-4">
+      <span className={`text-sm font-medium ${!modoLivre ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+        Diário
+      </span>
+      <Switch checked={modoLivre} onCheckedChange={alternarModo} id="modo-jogo" />
+      <span className={`text-sm font-medium ${modoLivre ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+        Livre
+      </span>
     </div>
-  );
+  )
 }

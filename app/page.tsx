@@ -1,7 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Check, X } from "lucide-react"
+import { AlertCircle } from "lucide-react";
+
+import { removeAccents } from "../utils/remove-accents"
 
 import ButtonComp from "../components/button"
 import {renderKeyboard} from "../components/render-keyboard"
@@ -27,6 +29,7 @@ export default function Page() {
   const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
   const [mode, setMode] = useState<"daily" | "free">("daily")
   const [showHowToPlay, setShowHowToPlay] = useState(true)
+  const [showAlert, setShowAlert] = useState<string | null>(null)
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
@@ -99,9 +102,6 @@ export default function Page() {
     }
   }, [mode]);
 
-  const removeAccents = (str: string) =>
-  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
   // Verifica o palpite do jogador
   const checkGuess = () => {
     if (guess.length === 0) return;
@@ -111,7 +111,11 @@ export default function Page() {
     const palavraNormalizada = removeAccents(word);
 
     // 🛑 Bloqueia se palavra não estiver na lista
-    if (!wordList.includes(palpiteOriginal)) {
+    const normalizedWordList = wordList.map(removeAccents);
+
+    // Quando for verificar:
+    if (!normalizedWordList.includes(removeAccents(palpiteOriginal))) {
+      setShowAlert('Palavra não reconhecida');
       return;
     }
 
@@ -124,6 +128,7 @@ export default function Page() {
     const novaEntrada = acertou ? word : palpiteOriginal;
     const novasTentativas = [...attempts, novaEntrada];
     setAttempts(novasTentativas);
+    setShowAlert(null)
 
     if (acertou) {
       setIsCorrect(true);
@@ -173,6 +178,8 @@ export default function Page() {
     setCorrectLetters(new Set());
     setWrongLetters(new Set());
     setExistingLetters(new Set());
+    const novaPalavra = generateRandomWord()
+    setWord(novaPalavra)
   }
 
   const feedbackByAttempt: Record<number, string> = {
@@ -189,7 +196,7 @@ export default function Page() {
 
   return (
     <>
-      <Header howToPlay={setShowHowToPlay} mode={mode} nextWord={nextWord} />
+      <Header howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} nextWord={nextWord} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
@@ -197,6 +204,16 @@ export default function Page() {
           <div className="flex gap-2 mb-1 justify-center">
             <ToggleMode mode={mode} setMode={setMode} />
           </div>
+
+          {/* Alert de jogo */}
+          {showAlert && (
+            <div className="flex w-full justify-center mb-2 mt-2">
+              <div className="bg-red-500/20 text-red-500 flex items-center gap-2 px-4 py-2 rounded-md animate-bounce">
+                <AlertCircle className="h-4 w-4" />
+                <span>{showAlert}</span>
+              </div>
+            </div>
+          )}
 
           {/* Grid de letras */}
           <div className="grid gap-1 sm:gap-2 mb-4 w-full place-items-center">
@@ -208,7 +225,7 @@ export default function Page() {
                   ) : (
                     <div
                       key={`${index}-${letraIndex}`}
-                      className="font-archivo flex items-center justify-center font-bold transition-none text-white border-2 border-[#333] text-xl sm:text-2xl"
+                      className="font-archivo flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
                       style={{
                         width: `clamp(30px, ${100 / word.length}vw, 50px)`,
                         height: `clamp(30px, ${100 / word.length}vw, 50px)`,
@@ -226,13 +243,13 @@ export default function Page() {
             <div className="justify-center mb-4 flex items-start gap-3">
               <h3
                 className={`font-semibold p-3 rounded-lg ${
-                  isCorrect ? 'bg-[#16a34a] text-white' : 'bg-[#111] text-white'
+                  isCorrect ? 'bg-[#22c55e80] border-2 border-[#22c55eb3] text-white' : 'bg-[#111] text-white'
                 }`}
               >
                 {isCorrect ? (
                   <>
                     <span className="block text-xl">{getFeedback(attempts.length)}</span>
-                    <span className="block text-sm">Você acertou a palavra do dia em {attempts.length} tentativa{attempts.length > 1 ? 's' : ''}!</span>
+                    <span className="block text-sm">Você acertou a palavra {mode === 'daily' ? 'do dia' : null} em {attempts.length} tentativa{attempts.length > 1 ? 's' : ''}!</span>
                   </>
                 ) : (
                   'QUE PENA'
@@ -251,7 +268,7 @@ export default function Page() {
                 disabled
                 maxLength={word.length}
                 placeholder={`palavra de ${word.length} letras`}
-                className="w-10/12 bg-[#222] border-2 border-[#333] rounded-md px-3 py-2 text-center uppercase focus:outline-none text-[#16a34a] font-bold"
+                className="w-10/12 bg-transparent border-2 border-[#1e293b] rounded-md px-3 py-2 text-center uppercase focus:outline-none text-[#16a34a] font-bold"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && guess.length === word.length) {
                     checkGuess();

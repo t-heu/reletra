@@ -29,18 +29,21 @@ function Key({
 }: KeyProps) {
   const isDelete = letra === "DELETE";
 
-  let bgColor = "bg-[#d3d6da] border border-[#1f1b24]";
-  let textColor = "text-[#1f1b24]";
+  let bgColor = "bg-transparent border border-[#1e293b]";
+  let textColor = "text-[#eee]";
 
   if (correctLetters.has(letra)) {
-    bgColor = "bg-[#16a34a]";
+    bgColor = "bg-[#22c55e80] border-2 border-[#22c55eb3] hover:bg-[#22c55e99]";
     textColor = "text-white";
   } else if (existingLetters.has(letra)) {
-    bgColor = "bg-[#eab308]";
+    bgColor = "bg-[#eab30880] border-2 border-[#eab30880] hover:bg-[#eab30899]";
     textColor = "text-white";
   } else if (wrongLetters.has(letra)) {
-    bgColor = "bg-[#787c7e]";
+    bgColor = "bg-[#6b728080] text-white border-2 border-[#9ca3afb3] hover:bg-[#6b728099]";
     textColor = "text-white";
+  } else if (letra === "ENTER") {
+    bgColor = "text-[9px]! px-2 bg-[#eee] hover:bg-[#eee]";
+    textColor = "text-[#1e293b]";
   }
 
   const handleClick = () => {
@@ -63,8 +66,8 @@ function Key({
     <button
       onClick={handleClick}
       disabled={disabled}
-      className={`${letra === "ENTER" && "text-xs"}
-        ${bgColor} ${textColor} rounded font-bold active:scale-95 transition-all
+      className={`
+        ${bgColor} ${textColor} rounded hover:bg-[#1e293b] font-bold active:scale-95 transition-all
         ${isSpecial 
           ? "w-[48px] sm:w-[56px] md:w-[64px] lg:w-[72px]" 
           : "w-[32px] sm:w-[36px] md:w-[40px] lg:w-[44px]"
@@ -74,7 +77,11 @@ function Key({
         flex items-center justify-center font-archivo
       `}
     >
-      {isDelete ? <Delete className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> : letra}
+      {isDelete ? (
+        <Delete className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
+      ) : (
+        letra
+      )}
     </button>
   );
 }

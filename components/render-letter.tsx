@@ -1,5 +1,4 @@
-const removeAccents = (str: string) =>
-  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+import { removeAccents } from "../utils/remove-accents"
 
 const renderLetter = (tentativa: string, index: number, letraIndex: number, word: any) => {
   const letra = tentativa[letraIndex]
@@ -20,11 +19,11 @@ const renderLetter = (tentativa: string, index: number, letraIndex: number, word
   // Define classes conforme o status da letra
   let colorClasses = ""
   if (removeAccents(word[letraIndex]) === removeAccents(letra)) {
-    colorClasses = "bg-[#16a34a] text-white"
+    colorClasses = "bg-[#22c55e80] border-2 border-[#22c55eb3] text-white"
   } else if (word.includes(letra)) {
-    colorClasses = "bg-[#eab308] text-white"
+    colorClasses = "bg-[#eab30880] border-2 border-[#eab30880] text-white"
   } else {
-    colorClasses = "bg-[#787c7e] text-white" // pode manter o fundo escuro para letra errada
+    colorClasses = "bg-[#6b728080] text-white border-2 border-[#9ca3afb3]" // pode manter o fundo escuro para letra errada
   }
 
   // Retorna a div com a cor certa e letra
