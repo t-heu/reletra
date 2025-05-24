@@ -104,18 +104,18 @@ export default function Statistics({
                   <div key={tentativa} className="flex items-center gap-2">
                     <span className="w-4 text-sm font-medium text-white">{tentativa}</span>
                     <div className="flex-1 relative">
-                      <div
-                        className={`h-6 rounded flex items-center justify-end px-2 text-sm font-medium transition-all duration-500 ${
-                          isUltimaTentativa
-                            ? "bg-green-500 text-white"
-                            : count > 0
-                              ? "bg-gray-300 text-black"
-                              : "bg-[#0a1121] text-gray-400"
-                        }`}
-                        style={{ width: `${Math.max(porcentagem, count > 0 ? 15 : 8)}%` }}
-                      >
-                        {count > 0 && <span>{count}</span>}
-                      </div>
+    <div
+  className={`h-6 rounded flex items-center justify-end px-2 text-sm font-medium transition-all duration-500 ${
+    count === 0
+      ? "bg-[#0a1121] text-gray-400"
+      : isUltimaTentativa
+        ? "bg-green-500 text-white"
+        : "bg-white text-black"
+  }`}
+  style={{ width: `${Math.max(porcentagem, count > 0 ? 15 : 8)}%` }}
+>
+  {count > 0 && <span>{count}</span>}
+</div>
                     </div>
                   </div>
                 )
