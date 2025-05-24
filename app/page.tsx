@@ -12,6 +12,7 @@ import renderLetter from "../components/render-letter"
 import HowToPlay from "../components/how-to-play"
 import Footer from "../components/footer"
 import Header from "../components/header"
+import Statistics from "../components/statistics"
 
 import validWords from "../validWords.json";
 import {generateDailyWord, generateRandomWord} from "../utils/generateWords"
@@ -30,10 +31,25 @@ export default function Page() {
   const [mode, setMode] = useState<"daily" | "free">("daily")
   const [showHowToPlay, setShowHowToPlay] = useState(true)
   const [showAlert, setShowAlert] = useState<string | null>(null)
+  const [mostrarEstatisticas, setMostrarEstatisticas] = useState(false)
+  const [estatisticas, setEstatisticas] = useState({
+    jogados: 0,
+    vitorias: 0,
+    sequenciaAtual: 0,
+    sequenciaMaxima: 0,
+    distribuicao: [0, 0, 0, 0, 0, 0], // índices 0-5 para tentativas 1-6
+  })
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
   const wordList = (validWords as {words: string[]}).words;
+
+  useEffect(() => {
+    if (lose) {
+      setMostrarEstatisticas(true)
+      atualizarEstatisticas(false, attempts.length)
+    }
+  }, [lose, attempts.length])
 
   // Inicializa o jogo
   useEffect(() => {
@@ -102,6 +118,38 @@ export default function Page() {
     }
   }, [mode]);
 
+  // Carregar estatísticas do localStorage
+  useEffect(() => {
+    const estatisticasSalvas = localStorage.getItem("letramix-estatisticas")
+    if (estatisticasSalvas) {
+      setEstatisticas(JSON.parse(estatisticasSalvas))
+    }
+  }, [])
+
+  // Salvar estatísticas no localStorage
+  function salvarEstatisticas(novasEstatisticas: typeof estatisticas) {
+    setEstatisticas(novasEstatisticas)
+    localStorage.setItem("letramix-estatisticas", JSON.stringify(novasEstatisticas))
+  }
+
+  // Atualizar estatísticas quando o jogo termina
+  function atualizarEstatisticas(ganhou: boolean, tentativasUsadas: number) {
+    const novasEstatisticas = { ...estatisticas }
+
+    novasEstatisticas.jogados += 1
+
+    if (ganhou) {
+      novasEstatisticas.vitorias += 1
+      novasEstatisticas.sequenciaAtual += 1
+      novasEstatisticas.sequenciaMaxima = Math.max(novasEstatisticas.sequenciaMaxima, novasEstatisticas.sequenciaAtual)
+      // Atualizar distribuição (tentativasUsadas - 1 porque o array é 0-indexed)
+      novasEstatisticas.distribuicao[tentativasUsadas - 1] += 1
+    } else {
+      novasEstatisticas.sequenciaAtual = 0
+    }
+    salvarEstatisticas(novasEstatisticas)
+  }
+
   // Verifica o palpite do jogador
   const checkGuess = () => {
     if (guess.length === 0) return;
@@ -132,6 +180,8 @@ export default function Page() {
 
     if (acertou) {
       setIsCorrect(true);
+      setMostrarEstatisticas(true)
+      atualizarEstatisticas(true, attempts.length)
       if (mode === "daily") {
         localStorage.setItem("isCorrect", "true");
       }
@@ -200,6 +250,14 @@ export default function Page() {
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
+
+        <Statistics
+          open={mostrarEstatisticas}
+          onOpenChange={setMostrarEstatisticas}
+          estatisticas={estatisticas}
+          ultimaVitoria={isCorrect}
+          tentativasUltimaPalavra={(isCorrect || lose) ? attempts.length : 0}
+        />
         <div className="w-full max-w-[500px]">
           <div className="flex gap-2 mb-1 justify-center">
             <ToggleMode mode={mode} setMode={setMode} />
@@ -243,7 +301,7 @@ export default function Page() {
             <div className="justify-center mb-4 flex items-start gap-3">
               <h3
                 className={`font-semibold p-3 rounded-lg ${
-                  isCorrect ? 'bg-[#22c55e80] border-2 border-[#22c55eb3] text-white' : 'bg-[#111] text-white'
+                  isCorrect ? 'bg-[#22c55e80] border-2 border-[#22c55eb3] text-white' : 'bg-[#eee] text-black'
                 }`}
               >
                 {isCorrect ? (
