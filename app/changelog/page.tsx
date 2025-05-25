@@ -10,7 +10,7 @@ interface CardProps {
 function Card({ children, className = '' }: CardProps) {
   return (
     <div
-      className={`bg-[#111] border border-[#1e293b] rounded-md p-6 shadow-sm ${className}`}
+      className={`bg-[#0a1121] border border-[#1e293b] rounded-md p-6 shadow-sm ${className}`}
     >
       {children}
     </div>
@@ -84,6 +84,16 @@ function Badge({ children, className = '' }: BadgeProps) {
 
 export default function ChangelogPage() {
   const changelog = [
+    {
+      version: "v1.2.0",
+      date: "25 de Maio, 2025",
+      description: "Melhorias na lógica de palavras diárias e modo aleatório",
+      changes: [
+        { type: "new", text: "Exibição da palavra do dia anterior após derrota" },
+        { type: "improvement", text: "Modo aleatório agora escolhe palavras de 3 a 6 letras dinamicamente no modo libre" },
+        { type: "fix", text: "Correção no filtro de palavras do dicionário unificado" },
+      ],
+    },
     {
       version: "v1.1.0",
       date: "23 de Maio, 2025",

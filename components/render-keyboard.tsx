@@ -110,7 +110,7 @@ export const renderKeyboard = ({
   word,
 }: KeyboardProps) => {
   return (
-    <div className="flex flex-col items-center gap-1 w-full px-1 sm:px-2 mt-8">
+    <div className="flex flex-col items-center gap-1 w-full px-1 sm:px-2 mt-5">
       {/* Linha 1 */}
       <div className="flex justify-center gap-[4px]">
         {"QWERTYUIOP".split("").map((letra) => (

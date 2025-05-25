@@ -1,6 +1,9 @@
 import React from "react";
+import {
+  Clock,
+} from "lucide-react"
 
-export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
+export default function ComoJogarModal({ onClose, nextWord, mode }: { onClose: () => void, nextWord: string, mode: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-[#020817] w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-white">
@@ -66,8 +69,16 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <p className="text-xs text-gray-200 mt-4">
-          Um novo desafio é lançado diariamente à meia-noite.
+          Para modo Diário um novo desafio é lançado diariamente à meia-noite.
         </p>
+
+        {/* Timer (modo diário) */}
+        {mode === "daily" && (
+          <div className="flex items-center gap-1 text-sm text-white">
+            <Clock className="h-4 w-4" />
+            <span className="font-mono">Próxima palavra em: {nextWord}</span>
+          </div>
+        )}
       </div>
     </div>
   );

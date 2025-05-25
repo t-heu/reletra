@@ -5,7 +5,6 @@ import {
   Settings,
   Sun,
   Moon,
-  Clock,
   ChartNoAxesColumnDecreasing 
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
@@ -16,14 +15,12 @@ type Props = {
   //theme: "dark" | "light"
   //setTheme: (t: "dark" | "light") => void
   mode: "daily" | "free"
-  nextWord: string
   setMostrarEstatisticas: any
 }
 
 export default function Header({
   howToPlay,
   mode,
-  nextWord,
   restartGame,
   setMostrarEstatisticas
 }: Props) {
@@ -79,7 +76,7 @@ export default function Header({
 
         {openDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-[#020817] dark:bg-gray-800 border border-[#1e293b] dark:border-gray-700 rounded shadow-md z-50">
-            <button
+            {mode === 'free' && (<button
               onClick={() => {
                 restartGame()
                 setOpenDropdown(false)
@@ -87,7 +84,7 @@ export default function Header({
               className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
             >
               Resetar
-            </button>
+            </button>)}
             <button
               onClick={() => {
                 setTheme(theme === "dark" ? "light" : "dark")
@@ -101,14 +98,6 @@ export default function Header({
           </div>
         )}
       </div>
-
-      {/* Timer (modo diário) */}
-      {mode === "daily" && (
-        <div className="absolute right-4 bottom-[-1.5rem] flex items-center gap-1 text-sm text-white">
-          <Clock className="h-4 w-4" />
-          <span className="font-mono">{nextWord}</span>
-        </div>
-      )}
     </header>
   )
 }

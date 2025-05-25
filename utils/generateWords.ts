@@ -1,46 +1,63 @@
-import dictionary from "../dictionary.json"
+import dictionary from "../validWords.json";
 
-const DICTIONARY: Record<string, string[]> = dictionary;
+// O dicionário agora é um array gigante
+const DICTIONARY: string[] = (dictionary as { words: string[] }).words;
 
-// Pega todas as palavras válidas (flattened)
-const getAllWords = () => {
-  return Object.values(DICTIONARY).flat();
+// Filtra palavras de 3 a 6 letras
+const getWordsOfValidLength = (): string[] => {
+  return DICTIONARY.filter(word => word.length >= 3 && word.length <= 6);
 };
 
-// Pega uma lista de palavras com um tamanho específico
+// Pega palavras de um tamanho específico (3 a 6)
 const getWordsOfLength = (length: number): string[] => {
-  return DICTIONARY[String(length)] || [];
+  if (length < 3 || length > 6) return [];
+  return DICTIONARY.filter(word => word.length === length);
 };
 
-// Gera a palavra do dia baseada na data e tamanho desejado
-export const generateDailyWord = (length: number = 5): string => {
-  const words = getWordsOfLength(length);
-  if (words.length === 0) throw new Error(`Sem palavras de tamanho ${length}`);
-
+// Palavra do dia baseada no tamanho e data
+export const generateDailyWord = (): string => {
   const today = new Date();
   const dayOfYear = Math.floor(
     (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24)
   );
 
+  const lengths = [3, 4, 5, 6];
+  const length = lengths[dayOfYear % lengths.length];
+  const words = getWordsOfLength(length);
+
   return words[dayOfYear % words.length];
 };
 
-// Gera uma palavra aleatória com tamanho escolhido (ou aleatório se não passar)
+// Palavra aleatória de 3 a 6 letras
 export const generateRandomWord = (length?: number): string => {
   let words: string[];
 
   if (length) {
     words = getWordsOfLength(length);
-    if (words.length === 0) throw new Error(`Sem palavras de tamanho ${length}`);
   } else {
-    // Tamanho aleatório com pelo menos uma palavra
-    const validLengths = Object.entries(DICTIONARY)
-      .filter(([_, words]) => words.length > 0)
-      .map(([len]) => Number(len));
-
-    const randomLength = validLengths[Math.floor(Math.random() * validLengths.length)];
-    words = getWordsOfLength(randomLength);
+    const allValid = getWordsOfValidLength();
+    return allValid[Math.floor(Math.random() * allValid.length)];
   }
 
+  if (words.length === 0) throw new Error(`Sem palavras de tamanho ${length}`);
   return words[Math.floor(Math.random() * words.length)];
+};
+
+const getValidWords = (): string[] => {
+  return DICTIONARY.filter((word) => word.length >= 3 && word.length <= 6);
+};
+
+const getDayOfYear = (date: Date): number => {
+  return Math.floor(
+    (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
+    (1000 * 60 * 60 * 24)
+  );
+};
+
+export const getYesterdayWord = (): string => {
+  const allWords = getValidWords();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const dayOfYear = getDayOfYear(yesterday);
+  return allWords[dayOfYear % allWords.length];
 };
