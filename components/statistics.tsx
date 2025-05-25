@@ -99,23 +99,23 @@ export default function Statistics({
                 const tentativa = index + 1
                 const porcentagem = maxDistribuicao > 0 ? (count / maxDistribuicao) * 100 : 0
                 const isUltimaTentativa = ultimaVitoria && tentativasUltimaPalavra === tentativa
-
+                
                 return (
                   <div key={tentativa} className="flex items-center gap-2">
                     <span className="w-4 text-sm font-medium text-white">{tentativa}</span>
                     <div className="flex-1 relative">
-    <div
-  className={`h-6 rounded flex items-center justify-end px-2 text-sm font-medium transition-all duration-500 ${
-    count === 0
-      ? "bg-[#0a1121] text-gray-400"
-      : isUltimaTentativa
-        ? "bg-green-500 text-white"
-        : "bg-white text-black"
-  }`}
-  style={{ width: `${Math.max(porcentagem, count > 0 ? 15 : 8)}%` }}
->
-  {count > 0 && <span>{count}</span>}
-</div>
+                      <div
+                        className={`h-6 rounded flex items-center justify-end px-2 text-sm font-medium transition-all duration-500 ${
+                          isUltimaTentativa
+                            ? "bg-green-500 text-white"
+                            : count > 0
+                              ? "bg-white text-black"
+                              : "bg-[#0a1121] text-gray-400"
+                        }`}
+                        style={{ width: `${Math.max(porcentagem, count > 0 ? 15 : 8)}%` }}
+                      >
+                        {count > 0 && <span>{count}</span>}
+                      </div>
                     </div>
                   </div>
                 )
@@ -127,7 +127,7 @@ export default function Statistics({
           <div className="flex justify-center">
             <button
               onClick={compartilharResultados}
-              className="flex items-center gap-2 bg-white text-[#222] px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 bg-white text-[#222] px-4 py-2 rounded-md hover:bg-[#ddd] transition-colors"
             >
               <Share2 className="h-4 w-4" />
               Compartilhar Estatísticas

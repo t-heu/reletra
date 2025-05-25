@@ -23,7 +23,6 @@ export default function Page() {
   const [guess, setGuess] = useState("")
   const [attempts, setAttempts] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
-  const [currentDate, setCurrentDate] = useState("")
   const [nextWord, setNextWord] = useState("")
   const [correctLetters, setCorrectLetters] = useState<Set<string>>(new Set())
   const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
@@ -56,8 +55,6 @@ export default function Page() {
     const today = new Date().toLocaleDateString("pt-BR")
 
     if (mode === "daily") {
-      setCurrentDate(today)
-
       const ultimoJogo = localStorage.getItem("ultimoJogo")
       const tentativasSalvas = JSON.parse(localStorage.getItem("attempts") || "[]")
       const acertouSalvo = localStorage.getItem("isCorrect") === "true"
@@ -142,8 +139,7 @@ export default function Page() {
       novasEstatisticas.vitorias += 1
       novasEstatisticas.sequenciaAtual += 1
       novasEstatisticas.sequenciaMaxima = Math.max(novasEstatisticas.sequenciaMaxima, novasEstatisticas.sequenciaAtual)
-      // Atualizar distribuição (tentativasUsadas - 1 porque o array é 0-indexed)
-      novasEstatisticas.distribuicao[tentativasUsadas - 1] += 1
+      novasEstatisticas.distribuicao[tentativasUsadas] += 1
     } else {
       novasEstatisticas.sequenciaAtual = 0
     }
@@ -180,8 +176,9 @@ export default function Page() {
 
     if (acertou) {
       setIsCorrect(true);
-      setMostrarEstatisticas(true)
+      console.log(attempts)
       atualizarEstatisticas(true, attempts.length)
+      setMostrarEstatisticas(true)
       if (mode === "daily") {
         localStorage.setItem("isCorrect", "true");
       }
@@ -246,7 +243,7 @@ export default function Page() {
 
   return (
     <>
-      <Header howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} nextWord={nextWord} />
+      <Header setMostrarEstatisticas={setMostrarEstatisticas} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} nextWord={nextWord} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}

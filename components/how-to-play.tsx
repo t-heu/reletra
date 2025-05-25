@@ -16,7 +16,7 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
 
         <ul className="list-disc pl-5 space-y-1 mb-4 text-sm">
           <li>Cada palpite deve ser uma palavra válida.</li>
-          <li>As palavras variam de 3 a 7 ou mais letras!</li>
+          <li>As palavras variam de 3 a 6 ou mais letras!</li>
           <li>
             Há dois modos de jogo:
             <ul className="list-disc pl-5">

@@ -23,7 +23,7 @@ const renderLetter = (tentativa: string, index: number, letraIndex: number, word
   } else if (word.includes(letra)) {
     colorClasses = "bg-[#eab30880] border-2 border-[#eab30880] text-white"
   } else {
-    colorClasses = "bg-[#6b728080] text-white border-2 border-[#9ca3afb3]" // pode manter o fundo escuro para letra errada
+    colorClasses = "bg-[#6b728080] border-2 border-[#9ca3afb3] text-white" // pode manter o fundo escuro para letra errada
   }
 
   // Retorna a div com a cor certa e letra

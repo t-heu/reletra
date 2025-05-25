@@ -17,13 +17,15 @@ type Props = {
   //setTheme: (t: "dark" | "light") => void
   mode: "daily" | "free"
   nextWord: string
+  setMostrarEstatisticas: any
 }
 
 export default function Header({
   howToPlay,
   mode,
   nextWord,
-  restartGame
+  restartGame,
+  setMostrarEstatisticas
 }: Props) {
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -68,7 +70,7 @@ export default function Header({
         </button>
 
         <button
-          onClick={() => {}}
+          onClick={() => setMostrarEstatisticas(true)}
           className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
           title="Como jogar"
         >
