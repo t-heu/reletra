@@ -55,9 +55,13 @@ const getDayOfYear = (date: Date): number => {
 };
 
 export const getYesterdayWord = (): string => {
-  const allWords = getValidWords();
+  const lengths = [3, 4, 5, 6];
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
+
   const dayOfYear = getDayOfYear(yesterday);
-  return allWords[dayOfYear % allWords.length];
+  const length = lengths[dayOfYear % lengths.length];
+  const words = getWordsOfLength(length);
+
+  return words[dayOfYear % words.length];
 };
