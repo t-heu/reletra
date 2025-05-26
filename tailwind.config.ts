@@ -11,10 +11,7 @@ const config: Config = {
   theme: {
   	extend: {
 			fontFamily: {
-				rubik: ['Rubik', 'sans-serif'],
-				archivo: ['Archivo Black', 'sans-serif'],
-				bebas: ['Bebas Neue', 'cursive'],
-				code: ['"Source Code Pro"', 'monospace'],
+				code: ['Source Code Pro', 'monospace'],
     	},
   		colors: {
   			background: 'hsl(var(--background))',

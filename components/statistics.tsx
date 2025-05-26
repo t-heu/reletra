@@ -1,11 +1,11 @@
 "use client"
 
-import { Share2, Trophy } from "lucide-react"
+import { Share2, Trophy, Clock } from "lucide-react"
 
 interface EStatisticsProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  estatisticas: {
+  statistics: {
     jogados: number
     vitorias: number
     sequenciaAtual: number
@@ -14,28 +14,33 @@ interface EStatisticsProps {
   }
   ultimaVitoria: boolean
   tentativasUltimaPalavra: number
+  nextWord: string
+  mode: string
 }
 
 export default function Statistics({
   open,
   onOpenChange,
-  estatisticas,
+  statistics,
   ultimaVitoria,
   tentativasUltimaPalavra,
+  nextWord, 
+  mode
 }: EStatisticsProps) {
   if (!open) return null
 
   const porcentagemVitorias =
-    estatisticas.jogados > 0 ? Math.round((estatisticas.vitorias / estatisticas.jogados) * 100) : 0
+    statistics.jogados > 0 ? Math.round((statistics.vitorias / statistics.jogados) * 100) : 0
 
-  const maxDistribuicao = Math.max(...estatisticas.distribuicao, 1)
+  const maxDistribuicao = Math.max(...statistics.distribuicao, 1);
+  const temDistribuicao = statistics.distribuicao?.some((valor) => valor > 0)
 
   function compartilharResultados() {
     const texto = `LetraMix - Estatísticas
-🎯 ${estatisticas.jogados} jogos
-🏆 ${porcentagemVitorias}% de vitórias
-🔥 ${estatisticas.sequenciaAtual} sequência atual
-⭐ ${estatisticas.sequenciaMaxima} melhor sequência`
+  🎯 ${statistics.jogados} jogos
+  🏆 ${porcentagemVitorias}% de vitórias
+  🔥 ${statistics.sequenciaAtual} sequência atual
+  ⭐ ${statistics.sequenciaMaxima} melhor sequência`
 
     if (navigator.share) {
       navigator.share({
@@ -74,7 +79,7 @@ export default function Statistics({
           {/* Estatísticas principais */}
           <div className="grid grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl text-white font-bold">{estatisticas.jogados}</div>
+              <div className="text-2xl text-white font-bold">{statistics.jogados}</div>
               <div className="text-sm text-gray-500">Jogados</div>
             </div>
             <div>
@@ -82,11 +87,11 @@ export default function Statistics({
               <div className="text-sm text-gray-500">Vitórias %</div>
             </div>
             <div>
-              <div className="text-2xl text-white font-bold">{estatisticas.sequenciaAtual}</div>
+              <div className="text-2xl text-white font-bold">{statistics.sequenciaAtual}</div>
               <div className="text-sm text-gray-500">Sequência Atual</div>
             </div>
             <div>
-              <div className="text-2xl text-white font-bold">{estatisticas.sequenciaMaxima}</div>
+              <div className="text-2xl text-white font-bold">{statistics.sequenciaMaxima}</div>
               <div className="text-sm text-gray-500">Melhor Sequência</div>
             </div>
           </div>
@@ -95,7 +100,7 @@ export default function Statistics({
           <div>
             <h3 className="font-semibold mb-3 text-white">Distribuição de Tentativas</h3>
             <div className="space-y-2">
-              {estatisticas.distribuicao.map((count, index) => {
+              {statistics.distribuicao.map((count, index) => {
                 const tentativa = index + 1
                 const porcentagem = maxDistribuicao > 0 ? (count / maxDistribuicao) * 100 : 0
                 const isUltimaTentativa = ultimaVitoria && tentativasUltimaPalavra === tentativa
@@ -124,15 +129,25 @@ export default function Statistics({
           </div>
 
           {/* Botão de compartilhar */}
-          <div className="flex justify-center">
-            <button
-              onClick={compartilharResultados}
-              className="flex items-center gap-2 bg-white text-[#222] px-4 py-2 rounded-md hover:bg-[#ddd] transition-colors"
-            >
-              <Share2 className="h-4 w-4" />
-              Compartilhar Estatísticas
-            </button>
-          </div>
+          {temDistribuicao && (
+            <div className="flex justify-center">
+              <button
+                onClick={compartilharResultados}
+                className="flex items-center gap-2 bg-white text-[#222] px-4 py-2 rounded-md hover:bg-[#ddd] transition-colors"
+              >
+                <Share2 className="h-4 w-4" />
+                Compartilhar Estatísticas
+              </button>
+            </div>
+          )}
+
+          {/* Timer (modo diário) */}
+          {mode === "daily" && (
+            <div className="flex items-center gap-1 text-sm text-white">
+              <Clock className="h-4 w-4" />
+              <span className="font-mono">Próxima palavra em: {nextWord}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -85,6 +85,16 @@ function Badge({ children, className = '' }: BadgeProps) {
 export default function ChangelogPage() {
   const changelog = [
     {
+      version: "v1.3.0",
+      date: "26 de Maio, 2025",
+      description: "Melhorias visual",
+      changes: [
+        { type: "improvement", text: "Novo logo" },
+        { type: "fix", text: "Correção de cores das indicacao de palavras" },
+        { type: "new", text: "Adicionado exibição do tema ao perder" },
+      ],
+    },
+    {
       version: "v1.2.0",
       date: "25 de Maio, 2025",
       description: "Melhorias na lógica de palavras diárias e modo aleatório",

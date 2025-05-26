@@ -15,14 +15,14 @@ type Props = {
   //theme: "dark" | "light"
   //setTheme: (t: "dark" | "light") => void
   mode: "daily" | "free"
-  setMostrarEstatisticas: any
+  setShowStatistics: any
 }
 
 export default function Header({
   howToPlay,
   mode,
   restartGame,
-  setMostrarEstatisticas
+  setShowStatistics
 }: Props) {
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -52,7 +52,7 @@ export default function Header({
       </button>
 
       {/* Título central */}
-      <h1 className="text-3xl font-bold text-center font-archivo text-white">
+      <h1 className="text-3xl font-bold text-center font-code text-white">
         Desletra
       </h1>
 
@@ -67,7 +67,7 @@ export default function Header({
         </button>
 
         <button
-          onClick={() => setMostrarEstatisticas(true)}
+          onClick={() => setShowStatistics(true)}
           className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
           title="Como jogar"
         >

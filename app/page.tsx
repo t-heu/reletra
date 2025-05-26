@@ -30,8 +30,8 @@ export default function Page() {
   const [mode, setMode] = useState<"daily" | "free">("daily")
   const [showHowToPlay, setShowHowToPlay] = useState(true)
   const [showAlert, setShowAlert] = useState<string | null>(null)
-  const [mostrarEstatisticas, setMostrarEstatisticas] = useState(false)
-  const [estatisticas, setEstatisticas] = useState({
+  const [showStatistics, setShowStatistics] = useState(false)
+  const [statistics, setStatistics] = useState({
     jogados: 0,
     vitorias: 0,
     sequenciaAtual: 0,
@@ -45,14 +45,14 @@ export default function Page() {
 
   useEffect(() => {
     const endGameStatus = localStorage.getItem("endGame")
-    console.log(endGameStatus)
+    
     if (lose) {
       if (mode === "daily" && !endGameStatus) {
         localStorage.setItem("endGame", "true");
         atualizarEstatisticas(false, attempts.length)
       }
 
-      if (mode === 'daily') setMostrarEstatisticas(true)
+      if (mode === 'daily') setShowStatistics(true)
     }
   }, [lose, attempts.length])
 
@@ -123,21 +123,21 @@ export default function Page() {
 
   // Carregar estatísticas do localStorage
   useEffect(() => {
-    const estatisticasSalvas = localStorage.getItem("letramix-estatisticas")
+    const estatisticasSalvas = localStorage.getItem("letramix-statistics")
     if (estatisticasSalvas) {
-      setEstatisticas(JSON.parse(estatisticasSalvas))
+      setStatistics(JSON.parse(estatisticasSalvas))
     }
   }, [])
 
   // Salvar estatísticas no localStorage
-  function salvarEstatisticas(novasEstatisticas: typeof estatisticas) {
-    setEstatisticas(novasEstatisticas)
-    localStorage.setItem("letramix-estatisticas", JSON.stringify(novasEstatisticas))
+  function salvarEstatisticas(novasEstatisticas: typeof statistics) {
+    setStatistics(novasEstatisticas)
+    localStorage.setItem("letramix-statistics", JSON.stringify(novasEstatisticas))
   }
 
   // Atualizar estatísticas quando o jogo termina
   function atualizarEstatisticas(ganhou: boolean, tentativasUsadas: number) {
-    const novasEstatisticas = { ...estatisticas }
+    const novasEstatisticas = { ...statistics }
 
     novasEstatisticas.jogados += 1
 
@@ -189,7 +189,7 @@ export default function Page() {
   if (acertou) {
     setIsCorrect(true);
     atualizarEstatisticas(true, attempts.length);
-    setMostrarEstatisticas(true);
+    setShowStatistics(true);
 
     if (mode === "daily") {
       localStorage.setItem("isCorrect", "true");
@@ -259,17 +259,18 @@ export default function Page() {
 
   return (
     <>
-      <Header setMostrarEstatisticas={setMostrarEstatisticas} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
+      <Header setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
-        {showHowToPlay && <HowToPlay mode={mode} nextWord={nextWord} onClose={() => setShowHowToPlay(false)} />}
+        {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
 
         <Statistics
-          open={mostrarEstatisticas}
-          onOpenChange={setMostrarEstatisticas}
-          estatisticas={estatisticas}
+          open={showStatistics}
+          onOpenChange={setShowStatistics}
+          statistics={statistics}
           ultimaVitoria={isCorrect}
           tentativasUltimaPalavra={(isCorrect || lose) ? attempts.length : 0}
+          mode={mode} nextWord={nextWord}
         />
         <div className="w-full max-w-[500px]">
           <div className="flex gap-2 mb-1 justify-center">

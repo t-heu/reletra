@@ -43,10 +43,6 @@ export const generateRandomWord = (length?: number): string => {
   return words[Math.floor(Math.random() * words.length)];
 };
 
-const getValidWords = (): string[] => {
-  return DICTIONARY.filter((word) => word.length >= 3 && word.length <= 6);
-};
-
 const getDayOfYear = (date: Date): number => {
   return Math.floor(
     (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /

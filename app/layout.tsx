@@ -5,7 +5,7 @@ import AdSense from "../components/ad-sense";
 
 export const metadata: Metadata = {
   title: 'Desletra',
-  description: 'Desletra é um jogo de adivinhação de palavras inspirado no clássico como Wordle, mas com um toque único. Nele, você deve descobrir uma palavra secreta digitando palpites e analisando as letras corretas, existentes ou ausentes.',
+  description: 'Desafie-se a desletrar uma nova palavra a cada dia!',
   generator: 'theu',
 }
 
@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head>
         <meta property="og:title" content="Desletra" />
-        <meta property="og:description" content="Desletra é um jogo de adivinhaçã que você deve descobrir uma palavra secreta digitando palpites e analisando as letras corretas, existentes ou ausentes." />
+        <meta property="og:description" content="Desafie-se a desletrar uma nova palavra a cada dia!" />
         <meta property="og:image" content="https://desletra.onrender.com/assets/web-app-manifest-192x192.png" />
         <meta property="og:url" content="https://desletra.onrender.com/" />
         <meta property="og:type" content="website" />

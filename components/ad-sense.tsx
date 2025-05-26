@@ -2,7 +2,7 @@ import Script from 'next/script';
 import React from 'react'
 
 type AdsenseTypes = {
-    pId: string;
+  pId: string;
 }
 
 const AdSense = ({ pId }: AdsenseTypes) => {
