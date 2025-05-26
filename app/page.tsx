@@ -154,76 +154,82 @@ export default function Page() {
 
   // Verifica o palpite do jogador
   const checkGuess = () => {
-    if (guess.length === 0) return;
+  if (guess.length === 0) return;
 
-    const palpiteOriginal = guess.toUpperCase();
-    const palpiteNormalizado = removeAccents(palpiteOriginal);
-    const palavraNormalizada = removeAccents(word);
+  const palpiteOriginal = guess.toUpperCase();
+  const palpiteNormalizado = removeAccents(palpiteOriginal);
+  const palavraNormalizada = removeAccents(word);
 
-    // 🛑 Bloqueia se palavra não estiver na lista
-    const normalizedWordList = wordList.map(removeAccents);
+  // 🛑 Bloqueia se palavra não estiver na lista
+  const normalizedWordList = wordList.map(w => removeAccents(w.toUpperCase()));
+  if (!normalizedWordList.includes(palpiteNormalizado)) {
+    setShowAlert('Palavra não reconhecida');
+    return;
+  }
 
-    // Quando for verificar:
-    if (!normalizedWordList.includes(removeAccents(palpiteOriginal))) {
-      setShowAlert('Palavra não reconhecida');
-      return;
-    }
+  if (attempts.includes(palpiteOriginal) || attempts.includes(word)) {
+    setGuess("");
+    return;
+  }
 
-    if (attempts.includes(palpiteOriginal) || attempts.includes(word)) {
-      setGuess("");
-      return;
-    }
+  const acertou = palpiteNormalizado === palavraNormalizada;
 
-    const acertou = palpiteNormalizado === palavraNormalizada;
-    const novaEntrada = acertou ? word : palpiteOriginal;
-    const novasTentativas = [...attempts, novaEntrada];
-    setAttempts(novasTentativas);
-    setShowAlert(null)
+  // Recupera a palavra original com acento da wordList
+  const palavraComAcento = wordList.find(
+    w => removeAccents(w.toUpperCase()) === palpiteNormalizado
+  );
 
-    if (acertou) {
-      setIsCorrect(true);
-      console.log(attempts)
-      atualizarEstatisticas(true, attempts.length)
-      setMostrarEstatisticas(true)
-      if (mode === "daily") {
-        localStorage.setItem("isCorrect", "true");
-        localStorage.setItem("endGame", "true");
-      }
-    }
+  // Usa a palavra com acento (ou o próprio palpite original, se não achar)
+  const palavraFinal = acertou ? word : palavraComAcento?.toUpperCase() || palpiteOriginal;
 
-    // Atualiza os sets de letras
-    const novasLetrasCorretas = new Set(correctLetters);
-    const novasLetrasIncorretas = new Set(wrongLetters);
-    const novasLetrasExistentes = new Set(existingLetters);
+  const novasTentativas = [...attempts, palavraFinal];
+  setAttempts(novasTentativas);
+  setShowAlert(null);
 
-    for (let i = 0; i < palpiteNormalizado.length; i++) {
-      const letraNormalizada = palpiteNormalizado[i];
-      const letraOriginal = palpiteOriginal[i];
-
-      if (palavraNormalizada.includes(letraNormalizada)) {
-        if (palavraNormalizada[i] === letraNormalizada) {
-          novasLetrasCorretas.add(letraOriginal);
-        } else {
-          novasLetrasExistentes.add(letraOriginal);
-        }
-      } else {
-        novasLetrasIncorretas.add(letraOriginal);
-      }
-    }
-
-    setCorrectLetters(novasLetrasCorretas);
-    setWrongLetters(novasLetrasIncorretas);
-    setExistingLetters(novasLetrasExistentes);
+  if (acertou) {
+    setIsCorrect(true);
+    atualizarEstatisticas(true, attempts.length);
+    setMostrarEstatisticas(true);
 
     if (mode === "daily") {
-      localStorage.setItem("attempts", JSON.stringify(novasTentativas));
-      localStorage.setItem("correctLetters", JSON.stringify([...novasLetrasCorretas]));
-      localStorage.setItem("wrongLetters", JSON.stringify([...novasLetrasIncorretas]));
-      localStorage.setItem("existingLetters", JSON.stringify([...novasLetrasExistentes]));
+      localStorage.setItem("isCorrect", "true");
+      localStorage.setItem("endGame", "true");
     }
+  }
 
-    setGuess("");
-  };
+  // Atualiza os sets de letras
+  const novasLetrasCorretas = new Set(correctLetters);
+  const novasLetrasIncorretas = new Set(wrongLetters);
+  const novasLetrasExistentes = new Set(existingLetters);
+
+  for (let i = 0; i < palpiteNormalizado.length; i++) {
+    const letraNormalizada = palpiteNormalizado[i];
+    const letraOriginal = palpiteOriginal[i];
+
+    if (palavraNormalizada.includes(letraNormalizada)) {
+      if (palavraNormalizada[i] === letraNormalizada) {
+        novasLetrasCorretas.add(letraOriginal);
+      } else {
+        novasLetrasExistentes.add(letraOriginal);
+      }
+    } else {
+      novasLetrasIncorretas.add(letraOriginal);
+    }
+  }
+
+  setCorrectLetters(novasLetrasCorretas);
+  setWrongLetters(novasLetrasIncorretas);
+  setExistingLetters(novasLetrasExistentes);
+
+  if (mode === "daily") {
+    localStorage.setItem("attempts", JSON.stringify(novasTentativas));
+    localStorage.setItem("correctLetters", JSON.stringify([...novasLetrasCorretas]));
+    localStorage.setItem("wrongLetters", JSON.stringify([...novasLetrasIncorretas]));
+    localStorage.setItem("existingLetters", JSON.stringify([...novasLetrasExistentes]));
+  }
+
+  setGuess("");
+};
 
   const restartGame = () => {
     setGuess("");
