@@ -334,9 +334,9 @@ export default function Page() {
                       key={`${index}-${letraIndex}`}
                       className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
                       style={{
-                        width: `clamp(30px, ${100 / word.length}vw, 50px)`,
-                        height: `clamp(30px, ${100 / word.length}vw, 50px)`,
-                        fontSize: `clamp(1rem, ${6 / word.length}vw, 2rem)`
+                        width: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                        height: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                        fontSize: `2rem`
                       }}
                     />
                   );

@@ -13,9 +13,9 @@ const renderLetter = (
     "font-roboto flex items-center justify-center font-bold transition-none text-white";
 
   const dynamicStyle = {
-    width: `clamp(30px, ${100 / word.length}vw, 50px)`,
-    height: `clamp(30px, ${100 / word.length}vw, 50px)`,
-    fontSize: `clamp(1.5rem, ${100 * 0.6}vw, 1rem)`
+    width: `clamp(45px, ${80 / word.length}vw, 62px)`,
+    height: `clamp(45px, ${80 / word.length}vw, 62px)`,
+    fontSize: `2rem`
   };
 
   if (!letra) {
