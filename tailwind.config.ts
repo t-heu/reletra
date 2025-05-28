@@ -12,6 +12,7 @@ const config: Config = {
   	extend: {
 			fontFamily: {
 				code: ['Source Code Pro', 'monospace'],
+				roboto: ['Roboto', 'sans-serif']
     	},
   		colors: {
   			background: 'hsl(var(--background))',

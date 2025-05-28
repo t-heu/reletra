@@ -74,7 +74,7 @@ function Key({
         }
         h-12 sm:h-14 md:h-16 lg:h-18
         text-sm sm:text-base md:text-lg lg:text-xl
-        flex items-center justify-center font-archivo
+        flex items-center justify-center font-roboto
       `}
     >
       {isDelete ? (

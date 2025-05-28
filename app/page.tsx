@@ -38,6 +38,7 @@ export default function Page() {
     sequenciaMaxima: 0,
     distribuicao: [0, 0, 0, 0, 0, 0]
   })
+  const [wordLength, setWordLength] = useState<number | null>(null);
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
@@ -121,6 +122,33 @@ export default function Page() {
     }
   }, [mode]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isCorrect || lose) return;
+
+      const key = e.key.toUpperCase();
+
+      if (key === "ENTER") {
+        if (guess.length === word.length) {
+          checkGuess();
+        }
+        return;
+      }
+
+      if (key === "BACKSPACE") {
+        setGuess((prev) => prev.slice(0, -1));
+        return;
+      }
+
+      if (/^[A-ZÀ-Ú]$/.test(key) && guess.length < word.length) {
+        setGuess((prev) => prev + key);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [guess, word, isCorrect, lose]);
+
   // Carregar estatísticas do localStorage
   useEffect(() => {
     const estatisticasSalvas = localStorage.getItem("letramix-statistics")
@@ -154,84 +182,84 @@ export default function Page() {
 
   // Verifica o palpite do jogador
   const checkGuess = () => {
-  if (guess.length === 0) return;
+    if (guess.length === 0) return;
 
-  const palpiteOriginal = guess.toUpperCase();
-  const palpiteNormalizado = removeAccents(palpiteOriginal);
-  const palavraNormalizada = removeAccents(word);
+    const palpiteOriginal = guess.toUpperCase();
+    const palpiteNormalizado = removeAccents(palpiteOriginal);
+    const palavraNormalizada = removeAccents(word);
 
-  // 🛑 Bloqueia se palavra não estiver na lista
-  const normalizedWordList = wordList.map(w => removeAccents(w.toUpperCase()));
-  if (!normalizedWordList.includes(palpiteNormalizado)) {
-    setShowAlert('Palavra não reconhecida');
-    return;
-  }
+    // 🛑 Bloqueia se palavra não estiver na lista
+    const normalizedWordList = wordList.map(w => removeAccents(w.toUpperCase()));
+    if (!normalizedWordList.includes(palpiteNormalizado)) {
+      setShowAlert('Palavra não reconhecida');
+      return;
+    }
 
-  if (attempts.includes(palpiteOriginal) || attempts.includes(word)) {
-    setGuess("");
-    return;
-  }
+    if (attempts.includes(palpiteOriginal) || attempts.includes(word)) {
+      setGuess("");
+      return;
+    }
 
-  const acertou = palpiteNormalizado === palavraNormalizada;
+    const acertou = palpiteNormalizado === palavraNormalizada;
 
-  // Recupera a palavra original com acento da wordList
-  const palavraComAcento = wordList.find(
-    w => removeAccents(w.toUpperCase()) === palpiteNormalizado
-  );
+    // Recupera a palavra original com acento da wordList
+    const palavraComAcento = wordList.find(
+      w => removeAccents(w.toUpperCase()) === palpiteNormalizado
+    );
 
-  // Usa a palavra com acento (ou o próprio palpite original, se não achar)
-  const palavraFinal = acertou ? word : palavraComAcento?.toUpperCase() || palpiteOriginal;
+    // Usa a palavra com acento (ou o próprio palpite original, se não achar)
+    const palavraFinal = acertou ? word : palavraComAcento?.toUpperCase() || palpiteOriginal;
 
-  const novasTentativas = [...attempts, palavraFinal];
-  setAttempts(novasTentativas);
-  setShowAlert(null);
+    const novasTentativas = [...attempts, palavraFinal];
+    setAttempts(novasTentativas);
+    setShowAlert(null);
 
-  if (acertou) {
-    setIsCorrect(true);
-    atualizarEstatisticas(true, attempts.length);
-    setShowStatistics(true);
+    if (acertou) {
+      setIsCorrect(true);
+      atualizarEstatisticas(true, attempts.length);
+      setShowStatistics(true);
+
+      if (mode === "daily") {
+        localStorage.setItem("isCorrect", "true");
+        localStorage.setItem("endGame", "true");
+      }
+    }
+
+    // Atualiza os sets de letras
+    const novasLetrasCorretas = new Set(correctLetters);
+    const novasLetrasIncorretas = new Set(wrongLetters);
+    const novasLetrasExistentes = new Set(existingLetters);
+
+    for (let i = 0; i < palpiteNormalizado.length; i++) {
+      const letraNormalizada = palpiteNormalizado[i];
+      const letraOriginal = palpiteOriginal[i];
+
+      if (palavraNormalizada.includes(letraNormalizada)) {
+        if (palavraNormalizada[i] === letraNormalizada) {
+          novasLetrasCorretas.add(letraOriginal);
+        } else {
+          novasLetrasExistentes.add(letraOriginal);
+        }
+      } else {
+        novasLetrasIncorretas.add(letraOriginal);
+      }
+    }
+
+    setCorrectLetters(novasLetrasCorretas);
+    setWrongLetters(novasLetrasIncorretas);
+    setExistingLetters(novasLetrasExistentes);
 
     if (mode === "daily") {
-      localStorage.setItem("isCorrect", "true");
-      localStorage.setItem("endGame", "true");
+      localStorage.setItem("attempts", JSON.stringify(novasTentativas));
+      localStorage.setItem("correctLetters", JSON.stringify([...novasLetrasCorretas]));
+      localStorage.setItem("wrongLetters", JSON.stringify([...novasLetrasIncorretas]));
+      localStorage.setItem("existingLetters", JSON.stringify([...novasLetrasExistentes]));
     }
-  }
 
-  // Atualiza os sets de letras
-  const novasLetrasCorretas = new Set(correctLetters);
-  const novasLetrasIncorretas = new Set(wrongLetters);
-  const novasLetrasExistentes = new Set(existingLetters);
+    setGuess("");
+  };
 
-  for (let i = 0; i < palpiteNormalizado.length; i++) {
-    const letraNormalizada = palpiteNormalizado[i];
-    const letraOriginal = palpiteOriginal[i];
-
-    if (palavraNormalizada.includes(letraNormalizada)) {
-      if (palavraNormalizada[i] === letraNormalizada) {
-        novasLetrasCorretas.add(letraOriginal);
-      } else {
-        novasLetrasExistentes.add(letraOriginal);
-      }
-    } else {
-      novasLetrasIncorretas.add(letraOriginal);
-    }
-  }
-
-  setCorrectLetters(novasLetrasCorretas);
-  setWrongLetters(novasLetrasIncorretas);
-  setExistingLetters(novasLetrasExistentes);
-
-  if (mode === "daily") {
-    localStorage.setItem("attempts", JSON.stringify(novasTentativas));
-    localStorage.setItem("correctLetters", JSON.stringify([...novasLetrasCorretas]));
-    localStorage.setItem("wrongLetters", JSON.stringify([...novasLetrasIncorretas]));
-    localStorage.setItem("existingLetters", JSON.stringify([...novasLetrasExistentes]));
-  }
-
-  setGuess("");
-};
-
-  const restartGame = () => {
+  const restartGame = (len?: number) => {
     setGuess("");
     setIsCorrect(false);
     setAttempts([]);
@@ -240,26 +268,25 @@ export default function Page() {
     setExistingLetters(new Set());
 
     if (mode === 'free') {
-      const novaPalavra = generateRandomWord()
+      const novaPalavra = generateRandomWord(len)
       setWord(novaPalavra)
     }
   }
 
   const feedbackByAttempt: Record<number, string> = {
-      1: "UAU!",
-      2: "IMPRESSIONANTE!",
-      3: "ÓTIMO!",
-      4: "BOM TRABALHO!",
-      5: "DEU CERTO!",
-      6: "QUASE!",
-    };
+    1: "UAU!",
+    2: "IMPRESSIONANTE!",
+    3: "ÓTIMO!",
+    4: "BOM TRABALHO!",
+    5: "DEU CERTO!",
+    6: "QUASE!",
+  };
 
-  const getFeedback = (attempts: number) =>
-    feedbackByAttempt[attempts] || "Boa!";
+  const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
 
   return (
     <>
-      <Header setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
+      <Header wordLength={wordLength} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
@@ -291,21 +318,28 @@ export default function Page() {
           <div className="grid gap-1 sm:gap-1 mb-4 w-full place-items-center">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="flex gap-1 sm:gap-1 justify-center">
-                {Array.from({ length: word.length }).map((_, letraIndex) =>
-                  attempts[index] ? (
-                    renderLetter(attempts[index], index, letraIndex, word)
-                  ) : (
+                {Array.from({ length: word.length }).map((_, letraIndex) => {
+                  if (attempts[index]) {
+                    return renderLetter(attempts[index], index, letraIndex, word);
+                  }
+
+                  // Exibir `guess` atual (linha ativa)
+                  if (index === attempts.length) {
+                    return renderLetter(guess.padEnd(word.length), index, letraIndex, word, false);
+                  }
+
+                  return (
                     <div
                       key={`${index}-${letraIndex}`}
-                      className="font-archivo flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
+                      className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
                       style={{
                         width: `clamp(30px, ${100 / word.length}vw, 50px)`,
                         height: `clamp(30px, ${100 / word.length}vw, 50px)`,
                         fontSize: `clamp(1rem, ${6 / word.length}vw, 2rem)`
                       }}
                     />
-                  )
-                )}
+                  );
+                })}
               </div>
             ))}
           </div>
@@ -335,26 +369,6 @@ export default function Page() {
                   </div>
                 )}
               </h3>
-            </div>
-          )}
-
-          {/* Input de guess */}
-          {!isCorrect && !lose && (
-            <div className="flex gap-2 mb-4 items-center justify-center">
-              <input
-                type="text"
-                value={guess}
-                onChange={(e) => setGuess(e.target.value.toUpperCase())}
-                disabled
-                maxLength={word.length}
-                placeholder={`palavra de ${word.length} letras`}
-                className="w-10/12 bg-transparent border-2 border-[#1e293b] rounded-md px-3 py-2 text-center uppercase focus:outline-none text-[#16a34a] font-bold"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && guess.length === word.length) {
-                    checkGuess();
-                  }
-                }}
-              />
             </div>
           )}
 

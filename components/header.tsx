@@ -3,17 +3,16 @@
 import {
   HelpCircle,
   Settings,
-  Sun,
-  Moon,
+  RotateCcw,
   ChartNoAxesColumnDecreasing 
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 
 type Props = {
   howToPlay: (v: boolean) => void
-  restartGame: () => void
-  //theme: "dark" | "light"
-  //setTheme: (t: "dark" | "light") => void
+  restartGame: (len?: number) => void
+  wordLength: any
+  setWordLength: any
   mode: "daily" | "free"
   setShowStatistics: any
 }
@@ -22,11 +21,12 @@ export default function Header({
   howToPlay,
   mode,
   restartGame,
-  setShowStatistics
+  setShowStatistics,
+  wordLength,
+  setWordLength
 }: Props) {
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -76,25 +76,49 @@ export default function Header({
 
         {openDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-[#020817] dark:bg-gray-800 border border-[#1e293b] dark:border-gray-700 rounded shadow-md z-50">
-            {mode === 'free' && (<button
-              onClick={() => {
-                restartGame()
-                setOpenDropdown(false)
-              }}
-              className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
-            >
-              Resetar
-            </button>)}
-            <button
-              onClick={() => {
-                setTheme(theme === "dark" ? "light" : "dark")
-                setOpenDropdown(false)
-              }}
-              className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white"
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span>{theme === "dark" ? "Tema Claro" : "Tema Escuro"}</span>
-            </button>
+            {mode === 'free' && (
+              <>
+                <button
+                  onClick={() => {
+                    restartGame()
+                    setOpenDropdown(false)
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white"
+                >
+                  <RotateCcw className="h-5 w-5" />
+                  <span>Resetar</span>
+                </button>
+                
+                 <div className="px-4 py-2 text-sm text-white">Nível de dificuldade:</div>
+                 <button
+                  onClick={() => {
+                    setWordLength(null)
+                    restartGame()
+                    setOpenDropdown(false)
+                  }}
+                  className={`w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white ${
+                    wordLength === null ? "bg-[#1e293b] dark:bg-gray-700" : ""
+                  }`}
+                >
+                  Nenhum (Aleatório)
+                </button>
+                  {[3, 4, 5, 6].map((len) => (
+                    <button
+                      key={len}
+                      onClick={() => {
+                        setWordLength(len)
+                        restartGame(len)
+                        setOpenDropdown(false)
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white ${
+                        wordLength === len ? "bg-[#1e293b] dark:bg-gray-700" : ""
+                      }`}
+                    >
+                      {len} Letras
+                    </button>
+                  ))}
+              </>
+            )}
           </div>
         )}
       </div>
