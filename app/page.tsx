@@ -10,7 +10,6 @@ import {renderKeyboard} from "../components/render-keyboard"
 import ToggleMode from "../components/toggle-mode"
 import renderLetter from "../components/render-letter"
 import HowToPlay from "../components/how-to-play"
-import Footer from "../components/footer"
 import Header from "../components/header"
 import Statistics from "../components/statistics"
 
@@ -28,7 +27,7 @@ export default function Page() {
   const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
   const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
   const [mode, setMode] = useState<"daily" | "free">("daily")
-  const [showHowToPlay, setShowHowToPlay] = useState(true)
+  const [showHowToPlay, setShowHowToPlay] = useState(false)
   const [showAlert, setShowAlert] = useState<string | null>(null)
   const [showStatistics, setShowStatistics] = useState(false)
   const [statistics, setStatistics] = useState({
@@ -65,6 +64,8 @@ export default function Page() {
       const ultimoJogo = localStorage.getItem("ultimoJogo")
       const tentativasSalvas = JSON.parse(localStorage.getItem("attempts") || "[]")
       const acertouSalvo = localStorage.getItem("isCorrect") === "true"
+
+      if (!ultimoJogo) setShowHowToPlay(true)
 
       if (ultimoJogo === today) {
         setAttempts(tentativasSalvas)
@@ -393,8 +394,6 @@ export default function Page() {
           })}
         </div>
       </div>
-
-      <Footer />
     </>
   )
 }

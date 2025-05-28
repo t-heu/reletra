@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   HelpCircle,
   Settings,
@@ -43,13 +44,22 @@ export default function Header({
   return (
     <header className="w-full flex justify-around items-center mt-6 mb-4 px-4 relative">
       {/* Botão de ajuda */}
-      <button
-        onClick={() => howToPlay(true)}
-        className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
-        title="Como jogar"
-      >
-        <HelpCircle className="h-5 w-5" />
-      </button>
+      <div>
+        <button
+          onClick={() => howToPlay(true)}
+          className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+          title="Como jogar"
+        >
+          <HelpCircle className="h-5 w-5" />
+        </button>
+        {mode === 'free' && (<button
+            onClick={() => restartGame()}
+            className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+            title="Resetar"
+          >
+            <RotateCcw className="h-5 w-5" />
+        </button>)}
+      </div>
 
       {/* Título central */}
       <h1 className="text-3xl font-bold text-center font-code text-white">
@@ -76,21 +86,16 @@ export default function Header({
 
         {openDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-[#020817] dark:bg-gray-800 border border-[#1e293b] dark:border-gray-700 rounded shadow-md z-50">
+            <Link href="/changelog">
+              <button 
+                className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                Changelog
+              </button>
+            </Link>
             {mode === 'free' && (
               <>
+                <div className="px-4 py-2 text-sm text-white">Nível de dificuldade:</div>
                 <button
-                  onClick={() => {
-                    restartGame()
-                    setOpenDropdown(false)
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white"
-                >
-                  <RotateCcw className="h-5 w-5" />
-                  <span>Resetar</span>
-                </button>
-                
-                 <div className="px-4 py-2 text-sm text-white">Nível de dificuldade:</div>
-                 <button
                   onClick={() => {
                     setWordLength(null)
                     restartGame()
