@@ -360,11 +360,10 @@ export default function Page() {
                   </>
                 ) : (
                   <div>
-                    <span className="block text-xl">QUE PENA!</span>
+                    <span className="block text-xl">Você quase acertou!</span>
                       {mode === 'daily' && (
                         <>
-                          <p>Volte amanhã para uma nova palavra!</p>
-                          <p>A palavra de ontem era: <strong>{getYesterdayWord()}</strong></p>
+                          <p>Ontem era: <strong>{getYesterdayWord()}</strong></p>
                         </>
                       )}
                   </div>
