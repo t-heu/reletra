@@ -27,6 +27,9 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="512x512" href="/assets/web-app-manifest-512x512.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#020817" />
+        <meta name="description" content="Desafie-se a desletrar uma nova palavra a cada dia!" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://desletra.onrender.com/" />
         <AdSense pId="ca-pub-7158647172444246"/>
       </head>
       <body>{children}</body>

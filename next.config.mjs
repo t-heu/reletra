@@ -6,6 +6,8 @@ const nextConfig = {
   images: {
     unoptimized: true, // desativa otimização automática
   },
+  siteUrl: 'https://desletra.onrender.com',
+  generateRobotsTxt: true,
 }
 
 export default withPWA({
