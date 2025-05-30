@@ -7,11 +7,11 @@ import {NextWordTimer} from "./next-word-timer"
 interface EStatisticsProps {
   onOpenChange: (open: boolean) => void
   statistics: {
-    jogados: number
-    vitorias: number
-    sequenciaAtual: number
-    sequenciaMaxima: number
-    distribuicao: number[]
+    played: number
+    wins: number
+    currentStreak: number
+    maxStreak: number
+    distribution: number[]
   }
   ultimaVitoria: boolean
   tentativasUltimaPalavra: number
@@ -24,17 +24,17 @@ export default function Statistics({
   tentativasUltimaPalavra, 
 }: EStatisticsProps) {
   const porcentagemVitorias =
-    statistics.jogados > 0 ? Math.round((statistics.vitorias / statistics.jogados) * 100) : 0
+    statistics.played > 0 ? Math.round((statistics.wins / statistics.played) * 100) : 0
 
-  const maxDistribuicao = Math.max(...statistics.distribuicao, 1);
-  const temDistribuicao = statistics.distribuicao?.some((valor) => valor > 0)
+  const maxDistribuicao = Math.max(...statistics.distribution, 1);
+  const temDistribuicao = statistics.distribution?.some((valor) => valor > 0)
 
   function compartilharResultados() {
     const texto = `LetraMix - Estatísticas
-  🎯 ${statistics.jogados} jogos
+  🎯 ${statistics.played} jogos
   🏆 ${porcentagemVitorias}% de vitórias
-  🔥 ${statistics.sequenciaAtual} sequência atual
-  ⭐ ${statistics.sequenciaMaxima} melhor sequência`
+  🔥 ${statistics.currentStreak} sequência atual
+  ⭐ ${statistics.maxStreak} melhor sequência`
 
     if (navigator.share) {
       navigator.share({
@@ -73,7 +73,7 @@ export default function Statistics({
           {/* Estatísticas principais */}
           <div className="grid grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl text-white font-bold">{statistics.jogados}</div>
+              <div className="text-2xl text-white font-bold">{statistics.played}</div>
               <div className="text-sm text-gray-500">Jogados</div>
             </div>
             <div>
@@ -81,11 +81,11 @@ export default function Statistics({
               <div className="text-sm text-gray-500">Vitórias %</div>
             </div>
             <div>
-              <div className="text-2xl text-white font-bold">{statistics.sequenciaAtual}</div>
+              <div className="text-2xl text-white font-bold">{statistics.currentStreak}</div>
               <div className="text-sm text-gray-500">Sequência Atual</div>
             </div>
             <div>
-              <div className="text-2xl text-white font-bold">{statistics.sequenciaMaxima}</div>
+              <div className="text-2xl text-white font-bold">{statistics.maxStreak}</div>
               <div className="text-sm text-gray-500">Melhor Sequência</div>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function Statistics({
           <div>
             <h3 className="font-semibold mb-3 text-white">Distribuição de Tentativas</h3>
             <div className="space-y-2">
-              {statistics.distribuicao.map((count, index) => {
+              {statistics.distribution.map((count, index) => {
                 const tentativa = index + 1
                 const porcentagem = maxDistribuicao > 0 ? (count / maxDistribuicao) * 100 : 0
                 const isUltimaTentativa = ultimaVitoria && tentativasUltimaPalavra === tentativa

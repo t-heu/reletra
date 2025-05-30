@@ -30,6 +30,7 @@ export default function RootLayout({
         <meta name="description" content="Desafie-se a desletrar uma nova palavra a cada dia!" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://desletra.onrender.com/" />
+        <meta name="keywords" content="desletra, desletrar, palavras" />
         <AdSense pId="ca-pub-7158647172444246"/>
       </head>
       <body>{children}</body>

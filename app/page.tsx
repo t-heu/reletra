@@ -25,7 +25,7 @@ export default function Page() {
   const [guess, setGuess] = useState("")
   const [attempts, setAttempts] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
-  const [isLoser, setIsLose] = useState(false)
+  const [isLose, setIsLose] = useState(false)
   const [correctLetters, setCorrectLetters] = useState<Set<string>>(new Set())
   const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
   const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
@@ -34,11 +34,11 @@ export default function Page() {
   const [showAlert, setShowAlert] = useState<string | null>(null)
   const [showStatistics, setShowStatistics] = useState(false)
   const [statistics, setStatistics] = useState({
-    jogados: 0,
-    vitorias: 0,
-    sequenciaAtual: 0,
-    sequenciaMaxima: 0,
-    distribuicao: [0, 0, 0, 0, 0, 0]
+    played: 0,
+    wins: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    distribution: [0, 0, 0, 0, 0, 0]
   })
   const [wordLength, setWordLength] = useState<number | null>(null);
 
@@ -50,7 +50,7 @@ export default function Page() {
 
   // Carregar estatísticas do localStorage
   useEffect(() => {
-    const estatisticasSalvas = localStorage.getItem("letramix-statistics")
+    const estatisticasSalvas = localStorage.getItem("desletra-statistics")
     if (estatisticasSalvas) {
       setStatistics(JSON.parse(estatisticasSalvas))
     }
@@ -58,9 +58,12 @@ export default function Page() {
 
   useEffect(() => {
     if (lose) {
-      const endGameStatus = localStorage.getItem("endGame")
-      if (mode === "daily" && !endGameStatus) {
-        localStorage.setItem("endGame", "true");
+      const save: any = localStorage.getItem("gameStored");
+      const stored = JSON.parse(save)
+      
+      if (mode === "daily" && !stored.endGame) {
+        saveGameState({ endGame: true });
+        
         atualizarEstatisticas(false, tentativas)
 
         getAnalyticsIfSupported().then((analytics) => {
@@ -84,9 +87,9 @@ export default function Page() {
             });
           }
         });
-
-        setIsLose(true);
       }
+
+      setIsLose(true);
     }
   }, [lose])
 
@@ -95,12 +98,27 @@ export default function Page() {
     const today = new Date().toLocaleDateString("pt-BR")
 
     if (mode === "daily") {
-      const ultimoJogo = localStorage.getItem("ultimoJogo")
-      const tentativasSalvas = JSON.parse(localStorage.getItem("attempts") || "[]")
-      const acertouSalvo = localStorage.getItem("isCorrect") === "true"
-      const loseSalve = localStorage.getItem("endGame") === "true"
+      const stored = localStorage.getItem("gameStored");
 
-      if (loseSalve && !acertouSalvo) {
+      const {
+        ultimoJogo,
+        attempts: tentativasSalvas,
+        isCorrect: acertouSalvo,
+        endGame,
+        letterHints: {
+          correct = [],
+          wrong = [],
+          exists = []
+        } = {}
+      } = stored ? JSON.parse(stored) : {
+        ultimoJogo: "",
+        attempts: [],
+        isCorrect: false,
+        endGame: false,
+        letterHints: { correct: [], wrong: [], exists: [] }
+      };
+
+      if (endGame && !acertouSalvo) {
         setIsLose(true);
       }
 
@@ -110,20 +128,29 @@ export default function Page() {
         setAttempts(tentativasSalvas)
         setIsCorrect(acertouSalvo)
 
-        const lettersC = new Set<string>(JSON.parse(localStorage.getItem("correctLetters") || "[]"))
-        const lettersI = new Set<string>(JSON.parse(localStorage.getItem("wrongLetters") || "[]"))
-        const lettersE = new Set<string>(JSON.parse(localStorage.getItem("existingLetters") || "[]"))
+        if (acertouSalvo) setShowStatistics(true);
+
+        const lettersC = new Set<string>(correct);
+        const lettersI = new Set<string>(wrong);
+        const lettersE = new Set<string>(exists);
 
         setCorrectLetters(lettersC)
         setWrongLetters(lettersI)
         setExistingLetters(lettersE)
       } else {
-        localStorage.setItem("ultimoJogo", today)
-        localStorage.setItem("attempts", JSON.stringify([]))
-        localStorage.setItem("isCorrect", "false")
-        localStorage.setItem("correctLetters", JSON.stringify([]))
-        localStorage.setItem("wrongLetters", JSON.stringify([]))
-        localStorage.setItem("existingLetters", JSON.stringify([]))
+        const clearSave = {
+          ultimoJogo: today,
+          attempts: [],
+          isCorrect: false,
+          endGame: false,
+          letterHints: {
+            correct: [],
+            wrong: [],
+            exists: []
+          }
+        };
+
+        localStorage.setItem("gameStored", JSON.stringify(clearSave));
 
         setAttempts([])
         setIsCorrect(false)
@@ -150,22 +177,22 @@ export default function Page() {
   // Salvar estatísticas no localStorage
   function salvarEstatisticas(novasEstatisticas: typeof statistics) {
     setStatistics(novasEstatisticas)
-    localStorage.setItem("letramix-statistics", JSON.stringify(novasEstatisticas))
+    localStorage.setItem("desletra-statistics", JSON.stringify(novasEstatisticas))
   }
 
   // Atualizar estatísticas quando o jogo termina
   function atualizarEstatisticas(ganhou: boolean, tentativasUsadas: number) {
     const novasEstatisticas = { ...statistics }
 
-    novasEstatisticas.jogados += 1
+    novasEstatisticas.played += 1
 
     if (ganhou) {
-      novasEstatisticas.vitorias += 1
-      novasEstatisticas.sequenciaAtual += 1
-      novasEstatisticas.sequenciaMaxima = Math.max(novasEstatisticas.sequenciaMaxima, novasEstatisticas.sequenciaAtual)
-      novasEstatisticas.distribuicao[tentativasUsadas] += 1
+      novasEstatisticas.wins += 1
+      novasEstatisticas.currentStreak += 1
+      novasEstatisticas.maxStreak = Math.max(novasEstatisticas.maxStreak, novasEstatisticas.currentStreak)
+      novasEstatisticas.distribution[tentativasUsadas] += 1
     } else {
-      novasEstatisticas.sequenciaAtual = 0
+      novasEstatisticas.currentStreak = 0
     }
     salvarEstatisticas(novasEstatisticas)
   }
@@ -219,8 +246,7 @@ export default function Page() {
       });
 
       if (mode === "daily") {
-        localStorage.setItem("isCorrect", "true");
-        localStorage.setItem("endGame", "true");
+        saveGameState({ isCorrect: true, endGame: true });
       }
     }
 
@@ -249,14 +275,37 @@ export default function Page() {
     setExistingLetters(novasLetrasExistentes);
 
     if (mode === "daily") {
-      localStorage.setItem("attempts", JSON.stringify(novasTentativas));
-      localStorage.setItem("correctLetters", JSON.stringify([...novasLetrasCorretas]));
-      localStorage.setItem("wrongLetters", JSON.stringify([...novasLetrasIncorretas]));
-      localStorage.setItem("existingLetters", JSON.stringify([...novasLetrasExistentes]));
+      const letterHints = {
+        attempts: novasTentativas,
+        correct: [...novasLetrasCorretas],
+        wrong: [...novasLetrasIncorretas],
+        exists: [...novasLetrasExistentes]
+      };
+
+      saveGameState({
+        attempts: letterHints.attempts,
+        letterHints: {
+          correct: letterHints.correct,
+          wrong: letterHints.wrong,
+          exists: letterHints.exists
+        }
+      });
     }
 
     setGuess("");
   };
+
+  function saveGameState(novosDados: any) {
+    const estadoAtualRaw = localStorage.getItem("gameStored");
+    const estadoAtual = estadoAtualRaw ? JSON.parse(estadoAtualRaw) : {};
+
+    const novoEstado = {
+      ...estadoAtual,
+      ...novosDados,
+    };
+
+    localStorage.setItem("gameStored", JSON.stringify(novoEstado));
+  }
 
   const restartGame = (len?: number) => {
     setGuess("");
@@ -280,7 +329,7 @@ export default function Page() {
       });
     }
   }
-
+  
   const feedbackByAttempt: Record<number, string> = {
     1: "UAU!",
     2: "IMPRESSIONANTE!",
@@ -323,7 +372,7 @@ export default function Page() {
           )}
 
           {/* Alert de acerto */}
-          {(isCorrect || isLoser) && (
+          {(isCorrect || isLose) && (
             <div className="flex w-full justify-center mb-5">
               <div
                 className={`font-semibold p-2 rounded-lg border-2 text-center ${
@@ -361,36 +410,70 @@ export default function Page() {
 
           {/* Grid de letras */}
           <div className="grid gap-1 sm:gap-1 mb-4 w-full place-items-center">
-            {Array.from({ length: limitAttempts }).map((_, index) => (
-              <div key={index} className="flex gap-1 sm:gap-1 justify-center">
-                {Array.from({ length: word.length }).map((_, letraIndex) => {
-                  if (attempts[index]) {
-                    return renderLetter(attempts[index], index, letraIndex, word);
-                  }
-
-                  // Exibir `guess` atual (linha ativa)
-                  if (index === attempts.length) {
-                    return renderLetter(guess.padEnd(word.length), index, letraIndex, word, false);
-                  }
-
-                  return (
+            {word.length === 0 ? (
+              // Mostra skeleton enquanto `word` não está carregada
+              Array.from({ length: limitAttempts }).map((_, rowIndex) => (
+                <div key={rowIndex} className="flex gap-1 sm:gap-1 justify-center animate-pulse">
+                  {Array.from({ length: 5 }).map((_, colIndex) => ( // usa 5 como placeholder
                     <div
-                      key={`${index}-${letraIndex}`}
-                      className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
+                      key={`${rowIndex}-${colIndex}`}
+                      className="bg-slate-700 rounded border-2 border-slate-600"
                       style={{
-                        width: `clamp(45px, ${80 / word.length}vw, 62px)`,
-                        height: `clamp(45px, ${80 / word.length}vw, 62px)`,
-                        fontSize: `2rem`
+                        width: `clamp(45px, 16vw, 62px)`,
+                        height: `clamp(45px, 16vw, 62px)`,
                       }}
                     />
-                  );
-                })}
-              </div>
-            ))}
+                  ))}
+                </div>
+              ))
+            ) : (
+              // Renderização normal quando a palavra existe
+              Array.from({ length: limitAttempts }).map((_, index) => (
+                <div key={index} className="flex gap-1 sm:gap-1 justify-center">
+                  {Array.from({ length: word.length }).map((_, letraIndex) => {
+                    if (attempts[index]) {
+                      return renderLetter(attempts[index], index, letraIndex, word);
+                    }
+
+                    if (index === attempts.length) {
+                      const isActive = letraIndex === guess.length;
+
+                      return (
+                        <div
+                          key={`${index}-${letraIndex}`}
+                          className={`font-playpen flex items-center justify-center font-bold transition-none text-white border-2 text-xl sm:text-2xl ${
+                            isActive ? "border-[#F57C00] animate-pulse" : "border-[#1e293b]"
+                          }`}
+                          style={{
+                            width: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                            height: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                            fontSize: `2rem`
+                          }}
+                        >
+                          {guess[letraIndex] ?? ""}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={`${index}-${letraIndex}`}
+                        className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
+                        style={{
+                          width: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                          height: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                          fontSize: `2rem`
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              ))
+            )}
           </div>
 
           {/* Botões para jogar novamente / sair, aparecem se mode = "livre" e jogo terminou */}
-          {mode === "free" && (isCorrect || isLoser) && (
+          {mode === "free" && (isCorrect || isLose) && (
             <div className="flex gap-2 justify-center">
               <ButtonComp text="Jogar Novamente" press={() => restartGame()} />
             </div>
@@ -403,7 +486,7 @@ export default function Page() {
             wrongLetters,
             setGuess,
             isCorrect,
-            lose: isLoser,
+            lose: isLose,
             guess,
             checkGuess,
             word
