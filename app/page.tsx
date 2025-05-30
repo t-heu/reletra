@@ -12,17 +12,16 @@ import renderLetter from "../components/render-letter"
 import HowToPlay from "../components/how-to-play"
 import Header from "../components/header"
 import Statistics from "../components/statistics"
+import AdBanner from "../components/ad-banner"
 
 import validWords from "../validWords.json";
 import {generateDailyWord, generateRandomWord, getYesterdayWord} from "../utils/generateWords"
-import {formatRemainingTime} from "../utils/formatRemainingTime "
 
 export default function Page() {
   const [word, setWord] = useState("")
   const [guess, setGuess] = useState("")
   const [attempts, setAttempts] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
-  const [nextWord, setNextWord] = useState("")
   const [correctLetters, setCorrectLetters] = useState<Set<string>>(new Set())
   const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
   const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
@@ -43,18 +42,27 @@ export default function Page() {
   const lose = !isCorrect && attempts.length >= limitAttempts;
   const wordList = (validWords as {words: string[]}).words;
 
+  const tentativas = attempts.length
+
+  // Carregar estatísticas do localStorage
   useEffect(() => {
-    const endGameStatus = localStorage.getItem("endGame")
-    
+    const estatisticasSalvas = localStorage.getItem("letramix-statistics")
+    if (estatisticasSalvas) {
+      setStatistics(JSON.parse(estatisticasSalvas))
+    }
+  }, [])
+
+  useEffect(() => {
     if (lose) {
+      const endGameStatus = localStorage.getItem("endGame")
       if (mode === "daily" && !endGameStatus) {
         localStorage.setItem("endGame", "true");
-        atualizarEstatisticas(false, attempts.length)
+        atualizarEstatisticas(false, tentativas)
       }
 
       if (mode === 'daily') setShowStatistics(true)
     }
-  }, [lose, attempts.length])
+  }, [lose])
 
   // Inicializa o jogo
   useEffect(() => {
@@ -95,21 +103,6 @@ export default function Page() {
 
       const palavraDoDia = generateDailyWord()
       setWord(palavraDoDia)
-
-      const amanha = new Date()
-      amanha.setDate(amanha.getDate() + 1)
-      amanha.setHours(0, 0, 0, 0)
-      setNextWord(formatRemainingTime(amanha.getTime() - Date.now()))
-
-      const intervalo = setInterval(() => {
-        const agora = new Date()
-        const amanha = new Date()
-        amanha.setDate(amanha.getDate() + 1)
-        amanha.setHours(0, 0, 0, 0)
-        setNextWord(formatRemainingTime(amanha.getTime() - agora.getTime()))
-      }, 1000)
-
-      return () => clearInterval(intervalo)
     } else {
       // mode livre
       const novaPalavra = generateRandomWord()
@@ -119,44 +112,8 @@ export default function Page() {
       setCorrectLetters(new Set())
       setWrongLetters(new Set())
       setExistingLetters(new Set())
-      setNextWord("")
     }
   }, [mode]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isCorrect || lose) return;
-
-      const key = e.key.toUpperCase();
-
-      if (key === "ENTER") {
-        if (guess.length === word.length) {
-          checkGuess();
-        }
-        return;
-      }
-
-      if (key === "BACKSPACE") {
-        setGuess((prev) => prev.slice(0, -1));
-        return;
-      }
-
-      if (/^[A-ZÀ-Ú]$/.test(key) && guess.length < word.length) {
-        setGuess((prev) => prev + key);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [guess, word, isCorrect, lose]);
-
-  // Carregar estatísticas do localStorage
-  useEffect(() => {
-    const estatisticasSalvas = localStorage.getItem("letramix-statistics")
-    if (estatisticasSalvas) {
-      setStatistics(JSON.parse(estatisticasSalvas))
-    }
-  }, [])
 
   // Salvar estatísticas no localStorage
   function salvarEstatisticas(novasEstatisticas: typeof statistics) {
@@ -213,7 +170,7 @@ export default function Page() {
 
     const novasTentativas = [...attempts, palavraFinal];
     setAttempts(novasTentativas);
-    setShowAlert(null);
+    setShowAlert(null)
 
     if (acertou) {
       setIsCorrect(true);
@@ -284,24 +241,24 @@ export default function Page() {
   };
 
   const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
-
+  
   return (
-    <>
+    <> 
       <Header wordLength={wordLength} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
 
-        <Statistics
-          open={showStatistics}
-          onOpenChange={setShowStatistics}
-          statistics={statistics}
-          ultimaVitoria={isCorrect}
-          tentativasUltimaPalavra={(isCorrect || lose) ? attempts.length : 0}
-          mode={mode} nextWord={nextWord}
-        />
+        {showStatistics && (
+          <Statistics
+            onOpenChange={setShowStatistics}
+            statistics={statistics}
+            ultimaVitoria={isCorrect}
+            tentativasUltimaPalavra={tentativas}
+          />
+        )}
         <div className="w-full max-w-[500px]">
-          <div className="flex gap-2 mb-1 justify-center">
+          <div className="flex gap-2 justify-center">
             <ToggleMode mode={mode} setMode={setMode} />
           </div>
 
@@ -311,6 +268,43 @@ export default function Page() {
               <div className="bg-red-500/20 text-red-500 flex items-center gap-2 px-4 py-2 rounded-md animate-bounce">
                 <AlertCircle className="h-4 w-4" />
                 <span>{showAlert}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Alert de acerto */}
+          {(isCorrect || lose) && (
+            <div className="flex w-full justify-center my-2">
+              <div
+                className={`font-semibold p-2 rounded-lg border-2 text-center ${
+                  isCorrect
+                    ? "bg-[#22c55e80] border-[#22c55eb3] text-white"
+                    : "bg-[#eee] border-[#aaa] text-black"
+                }`}
+              >
+                {isCorrect ? (
+                  <>
+                    <h3 className="text-xl mb-1">{getFeedback(attempts.length)}</h3>
+                    <p className="text-sm">
+                      Você acertou a palavra {mode === "daily" ? "do dia" : ""} em {attempts.length} tentativa
+                      {attempts.length > 1 ? "s" : ""}!
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-xl mb-1">QUE PENA!</h3>
+                    {mode === "free" && (
+                      <p>
+                        A palavra era: <strong>{word}</strong>
+                      </p>
+                    )}
+                    {mode === "daily" && (
+                      <p>
+                        A palavra de ontem era: <strong>{getYesterdayWord()}</strong>
+                      </p>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -345,36 +339,9 @@ export default function Page() {
             ))}
           </div>
 
-          {/* Alert de acerto */}
-          {(isCorrect || lose) && (
-            <div className="text-center justify-center mb-4 flex items-start gap-3">
-              <h3
-                className={`font-semibold p-3 rounded-lg ${
-                  isCorrect ? ' bg-[#22c55e80] border-2 border-[#22c55eb3] text-white' : 'bg-[#eee] text-black border-2 border-[#aaa]'
-                }`}
-              >
-                {isCorrect ? (
-                  <>
-                    <span className="block text-xl">{getFeedback(attempts.length)}</span>
-                    <span className="block text-sm">Você acertou a palavra {mode === 'daily' ? 'do dia' : null} em {attempts.length} tentativa{attempts.length > 1 ? 's' : ''}!</span>
-                  </>
-                ) : (
-                  <div>
-                    <span className="block text-xl">Você quase acertou!</span>
-                      {mode === 'daily' && (
-                        <>
-                          <p>Ontem era: <strong>{getYesterdayWord()}</strong></p>
-                        </>
-                      )}
-                  </div>
-                )}
-              </h3>
-            </div>
-          )}
-
           {/* Botões para jogar novamente / sair, aparecem se mode = "livre" e jogo terminou */}
           {mode === "free" && (isCorrect || lose) && (
-            <div className="flex gap-2 mt-4 justify-center">
+            <div className="flex gap-2 justify-center">
               <ButtonComp text="Jogar Novamente" press={() => restartGame()} />
             </div>
           )}
@@ -393,6 +360,12 @@ export default function Page() {
           })}
         </div>
       </div>
+
+      <AdBanner
+        dataAdFormat="auto"
+        dataFullWidthResponsive={true}
+        dataAdSlot="9380851329"
+      />
     </>
   )
 }

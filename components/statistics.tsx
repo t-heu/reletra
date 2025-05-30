@@ -1,9 +1,10 @@
 "use client"
 
-import { Share2, Trophy, Clock } from "lucide-react"
+import { Share2, Trophy } from "lucide-react"
+
+import {NextWordTimer} from "./next-word-timer"
 
 interface EStatisticsProps {
-  open: boolean
   onOpenChange: (open: boolean) => void
   statistics: {
     jogados: number
@@ -14,21 +15,14 @@ interface EStatisticsProps {
   }
   ultimaVitoria: boolean
   tentativasUltimaPalavra: number
-  nextWord: string
-  mode: string
 }
 
 export default function Statistics({
-  open,
   onOpenChange,
   statistics,
   ultimaVitoria,
-  tentativasUltimaPalavra,
-  nextWord, 
-  mode
+  tentativasUltimaPalavra, 
 }: EStatisticsProps) {
-  if (!open) return null
-
   const porcentagemVitorias =
     statistics.jogados > 0 ? Math.round((statistics.vitorias / statistics.jogados) * 100) : 0
 
@@ -142,12 +136,7 @@ export default function Statistics({
           )}
 
           {/* Timer (modo diário) */}
-          {mode === "daily" && (
-            <div className="flex items-center gap-1 text-sm text-white">
-              <Clock className="h-4 w-4" />
-              <span className="font-mono">Próxima palavra em: {nextWord}</span>
-            </div>
-          )}
+          <NextWordTimer />
         </div>
       </div>
     </div>

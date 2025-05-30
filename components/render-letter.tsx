@@ -61,11 +61,13 @@ const renderLetter = (
     }
   }
 
+  const animationClass = letra ? "animate-spinOnce" : "";
+
   return (
     <div
       key={`${index}-${letraIndex}`}
       style={dynamicStyle}
-      className={`${highlightClasses} ${colorClasses}`}
+      className={`${highlightClasses} ${colorClasses} ${animationClass}`}
     >
       {letra}
     </div>

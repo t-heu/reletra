@@ -41,7 +41,7 @@ export default function ToggleMode({ mode, setMode }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mb-4">
+    <div className="flex items-center justify-center gap-2 mb-2">
       <span className={`text-sm font-medium ${!modoLivre ? "text-[#eee]" : "text-[#94a3b8]"}`}>
         Diário
       </span>

@@ -85,6 +85,14 @@ function Badge({ children, className = '' }: BadgeProps) {
 export default function ChangelogPage() {
   const changelog = [
     {
+      version: "v1.3.2",
+      date: "30 de Maio, 2025",
+      description: "Melhorias de performance",
+      changes: [
+        { type: "improvement", text: "Melhorias de performance" },
+      ],
+    },
+    {
       version: "v1.3.0",
       date: "26 de Maio, 2025",
       description: "Melhorias visual",
