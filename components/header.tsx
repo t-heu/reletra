@@ -92,6 +92,12 @@ export default function Header({
                 Changelog
               </button>
             </Link>
+            <Link href="/about">
+              <button 
+                className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                Sobre
+              </button>
+            </Link>
             {mode === 'free' && (
               <>
                 <div className="px-4 py-2 text-sm text-white">Nível de dificuldade:</div>

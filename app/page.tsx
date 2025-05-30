@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react"
 import { AlertCircle } from "lucide-react";
 
+import { getAnalyticsIfSupported } from "../api/firebase";
+import { logEvent } from "firebase/analytics";
+
 import { removeAccents } from "../utils/remove-accents"
 
 import ButtonComp from "../components/button"
@@ -22,6 +25,7 @@ export default function Page() {
   const [guess, setGuess] = useState("")
   const [attempts, setAttempts] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
+  const [isLoser, setIsLose] = useState(false)
   const [correctLetters, setCorrectLetters] = useState<Set<string>>(new Set())
   const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
   const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
@@ -58,9 +62,31 @@ export default function Page() {
       if (mode === "daily" && !endGameStatus) {
         localStorage.setItem("endGame", "true");
         atualizarEstatisticas(false, tentativas)
+
+        getAnalyticsIfSupported().then((analytics) => {
+          if (analytics) {
+            logEvent(analytics, "game_lost", {
+              mode,
+              attempts: attempts.length,
+            });
+          }
+        });
       }
 
-      if (mode === 'daily') setShowStatistics(true)
+      if (mode === 'daily') setShowStatistics(true);
+
+      if (mode === 'free') {
+        getAnalyticsIfSupported().then((analytics) => {
+          if (analytics) {
+            logEvent(analytics, "game_lost", {
+              mode,
+              attempts: attempts.length,
+            });
+          }
+        });
+
+        setIsLose(true);
+      }
     }
   }, [lose])
 
@@ -72,6 +98,11 @@ export default function Page() {
       const ultimoJogo = localStorage.getItem("ultimoJogo")
       const tentativasSalvas = JSON.parse(localStorage.getItem("attempts") || "[]")
       const acertouSalvo = localStorage.getItem("isCorrect") === "true"
+      const loseSalve = localStorage.getItem("endGame") === "true"
+
+      if (loseSalve && !acertouSalvo) {
+        setIsLose(true);
+      }
 
       if (!ultimoJogo) setShowHowToPlay(true)
 
@@ -96,6 +127,7 @@ export default function Page() {
 
         setAttempts([])
         setIsCorrect(false)
+        setIsLose(false)
         setCorrectLetters(new Set())
         setWrongLetters(new Set())
         setExistingLetters(new Set())
@@ -104,11 +136,11 @@ export default function Page() {
       const palavraDoDia = generateDailyWord()
       setWord(palavraDoDia)
     } else {
-      // mode livre
       const novaPalavra = generateRandomWord()
       setWord(novaPalavra)
       setAttempts([])
       setIsCorrect(false)
+      setIsLose(false)
       setCorrectLetters(new Set())
       setWrongLetters(new Set())
       setExistingLetters(new Set())
@@ -177,6 +209,15 @@ export default function Page() {
       atualizarEstatisticas(true, attempts.length);
       setShowStatistics(true);
 
+      getAnalyticsIfSupported().then((analytics) => {
+        if (analytics) {
+          logEvent(analytics, "word_guessed", {
+            attempts: attempts.length,
+            mode,
+          });
+        }
+      });
+
       if (mode === "daily") {
         localStorage.setItem("isCorrect", "true");
         localStorage.setItem("endGame", "true");
@@ -220,6 +261,7 @@ export default function Page() {
   const restartGame = (len?: number) => {
     setGuess("");
     setIsCorrect(false);
+    setIsLose(false)
     setAttempts([]);
     setCorrectLetters(new Set());
     setWrongLetters(new Set());
@@ -227,7 +269,15 @@ export default function Page() {
 
     if (mode === 'free') {
       const novaPalavra = generateRandomWord(len)
-      setWord(novaPalavra)
+      setWord(novaPalavra);
+
+      getAnalyticsIfSupported().then((analytics) => {
+        if (analytics) {
+          logEvent(analytics, "game_restarted", {
+            mode,
+          });
+        }
+      });
     }
   }
 
@@ -273,8 +323,8 @@ export default function Page() {
           )}
 
           {/* Alert de acerto */}
-          {(isCorrect || lose) && (
-            <div className="flex w-full justify-center my-2">
+          {(isCorrect || isLoser) && (
+            <div className="flex w-full justify-center mb-5">
               <div
                 className={`font-semibold p-2 rounded-lg border-2 text-center ${
                   isCorrect
@@ -311,7 +361,7 @@ export default function Page() {
 
           {/* Grid de letras */}
           <div className="grid gap-1 sm:gap-1 mb-4 w-full place-items-center">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: limitAttempts }).map((_, index) => (
               <div key={index} className="flex gap-1 sm:gap-1 justify-center">
                 {Array.from({ length: word.length }).map((_, letraIndex) => {
                   if (attempts[index]) {
@@ -340,7 +390,7 @@ export default function Page() {
           </div>
 
           {/* Botões para jogar novamente / sair, aparecem se mode = "livre" e jogo terminou */}
-          {mode === "free" && (isCorrect || lose) && (
+          {mode === "free" && (isCorrect || isLoser) && (
             <div className="flex gap-2 justify-center">
               <ButtonComp text="Jogar Novamente" press={() => restartGame()} />
             </div>
@@ -353,7 +403,7 @@ export default function Page() {
             wrongLetters,
             setGuess,
             isCorrect,
-            lose,
+            lose: isLoser,
             guess,
             checkGuess,
             word

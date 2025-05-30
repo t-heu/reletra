@@ -1,6 +1,19 @@
-import React from "react";
+"use client"
+
+import React, {useEffect} from "react";
+
+import { getAnalyticsIfSupported } from "../api/firebase";
+import { logEvent } from "firebase/analytics";
 
 export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    getAnalyticsIfSupported().then((analytics) => {
+      if (analytics) {
+        logEvent(analytics, "how_to_play_opened");
+      }
+    });
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-[#020817] w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-white">

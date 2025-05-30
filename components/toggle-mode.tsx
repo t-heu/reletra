@@ -1,5 +1,8 @@
 import { HTMLAttributes } from "react"
 
+import { getAnalyticsIfSupported } from "../api/firebase";
+import { logEvent } from "firebase/analytics";
+
 interface SwitchProps extends HTMLAttributes<HTMLButtonElement> {
   checked: boolean
   onCheckedChange: (checked: boolean) => void
@@ -38,10 +41,17 @@ export default function ToggleMode({ mode, setMode }: Props) {
 
   function alternarModo(checked: boolean) {
     setMode(checked ? "free" : "daily")
+    getAnalyticsIfSupported().then((analytics) => {
+      if (analytics) {
+        logEvent(analytics, "mode_switched", {
+          new_mode: mode,
+        });
+      }
+    });
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mb-2">
+    <div className="flex items-center justify-center gap-2 mb-6">
       <span className={`text-sm font-medium ${!modoLivre ? "text-[#eee]" : "text-[#94a3b8]"}`}>
         Diário
       </span>
