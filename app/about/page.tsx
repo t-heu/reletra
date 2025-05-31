@@ -1,10 +1,16 @@
 import Link from "next/link"
+import { Metadata } from 'next'
 
 import { ArrowLeft, X } from "lucide-react"
 
+export const metadata: Metadata = {
+  title: 'Sobre - Desletra',
+  description: 'Saiba mais sobre o projeto Desletra.',
+}
+
 export default function About() {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <main className="min-h-screen inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-[#1a1b2f] text-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
         <Link href="/">
           <button className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
@@ -49,6 +55,6 @@ export default function About() {
           Versão 1.3.2 • © {new Date().getFullYear()} Desletra
         </p>
       </div>
-    </div>
+    </main>
   );
 }

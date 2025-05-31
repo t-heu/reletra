@@ -342,7 +342,7 @@ export default function Page() {
   const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
   
   return (
-    <> 
+    <main> 
       <Header wordLength={wordLength} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
@@ -499,6 +499,6 @@ export default function Page() {
         dataFullWidthResponsive={true}
         dataAdSlot="9380851329"
       />
-    </>
+    </main>
   )
 }

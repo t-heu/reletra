@@ -1,7 +1,13 @@
 import React, { ReactNode } from 'react';
 import Link from "next/link"
+import { Metadata } from 'next'
 
 import { ArrowLeft } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: 'Changelog - Desletra',
+  description: 'Changelog do Desletra.',
+}
 
 interface CardProps {
   children: ReactNode;
@@ -82,7 +88,7 @@ function Badge({ children, className = '' }: BadgeProps) {
   );
 }
 
-export default function ChangelogPage() {
+export default function Changelog() {
   const changelog = [
     {
       version: "v1.3.2",
@@ -133,7 +139,7 @@ export default function ChangelogPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white p-4">
+    <main className="min-h-screen bg-[#020817] text-white p-4">
       <div className="max-w-3xl mx-auto py-8">
         <Link href="/">
           <button className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
@@ -190,6 +196,6 @@ export default function ChangelogPage() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
