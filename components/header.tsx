@@ -48,7 +48,7 @@ export default function Header({
   }, [])
 
   return (
-    <header className="w-full flex justify-around items-center mt-6 mb-4 px-4 relative">
+    <header className="w-full flex justify-around items-center mt-4 mb-2 px-4 relative">
       {/* Botão de ajuda */}
       <div>
         <button
@@ -76,7 +76,7 @@ export default function Header({
 
       {/* Título central */}
       <h1 className="text-3xl font-bold text-center font-code text-white">
-        Desletra
+        DESLETRA
       </h1>
 
       {/* Botão de configurações */}
@@ -99,28 +99,31 @@ export default function Header({
 
         {openDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-[#020817] dark:bg-gray-800 border border-[#1e293b] dark:border-gray-700 rounded shadow-md z-50">
-            <Link href="/changelog">
-              <button 
-                className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
-                Changelog
-              </button>
-            </Link>
-            <Link href="/about">
-              <button 
-                className="w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
-                Sobre
-              </button>
-            </Link>
+            <>
+              <span className="flex p-4 py-2 text-xm text-[#eee]">Páginas:</span>
+              <Link href="/changelog">
+                <button 
+                  className="w-full text-sm text-left px-8 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                  Changelog
+                </button>
+              </Link>
+              <Link href="/about">
+                <button 
+                  className="w-full text-sm text-left px-8 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                  Sobre
+                </button>
+              </Link>
+            </>
             {mode === 'free' && (
               <>
-                <div className="px-4 py-2 text-sm text-white">Nível de dificuldade:</div>
+                <span className="flex p-4 py-2 text-xm text-[#eee]">Nível de dificuldade:</span>
                 <button
                   onClick={() => {
                     setWordLength(null)
                     restartGame()
                     setOpenDropdown(false)
                   }}
-                  className={`w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white ${
+                  className={`w-full text-sm text-left px-8 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white ${
                     wordLength === null ? "bg-[#1e293b] dark:bg-gray-700" : ""
                   }`}
                 >
@@ -134,7 +137,7 @@ export default function Header({
                         restartGame(len)
                         setOpenDropdown(false)
                       }}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white ${
+                      className={`w-full text-sm text-left px-8 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white ${
                         wordLength === len ? "bg-[#1e293b] dark:bg-gray-700" : ""
                       }`}
                     >

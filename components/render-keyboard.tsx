@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
 import { Delete } from "lucide-react";
 
 type KeyProps = {
@@ -77,8 +76,8 @@ function Key({
 
   // Size classes based on key type
   const sizeClasses = isSpecial
-    ? "w-12 sm:w-16 md:w-20 px-2"
-    : "w-8 sm:w-10 md:w-12";
+    ? "w-14 sm:w-16 md:w-20 px-2"
+    : "w-14 sm:w-10 md:w-12";
 
   return (
     <button
@@ -129,13 +128,13 @@ export const renderKeyboard = ({
   ];
 
   return (
-    <div className="w-full max-w-lg mx-auto p-2 space-y-2">
+    <div className="w-full max-w-lg mx-auto space-y-2">
       {rows.map((row, rowIndex) => (
         <div 
           key={rowIndex} 
           className="flex justify-center gap-1 sm:gap-2"
           style={{
-            paddingLeft: rowIndex === 0 ? 0 : rowIndex === 1 ? '0.5rem' : '1.5rem'
+            paddingLeft: '0.5rem'
           }}
         >
           {row.map((letra) => (

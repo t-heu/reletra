@@ -1,7 +1,8 @@
 "use client"
 
 import { HTMLAttributes } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, X } from "lucide-react"
 
 import { getAnalyticsIfSupported } from "../api/firebase";
 import { logEvent } from "firebase/analytics";
@@ -26,7 +27,7 @@ export function Switch({ checked, onCheckedChange, id, ...props }: SwitchProps) 
       {...props}
     >
       <span
-        className={`inline-block h-5 w-5 transform rounded-full bg-[#020817] shadow transition-transform duration-200 ${
+        className={`inline-block h-5 w-5 transform rounded-full bg-[#020817] shadow transition-transform duration-200 hover:bg-[#0f172a] ${
           checked ? "translate-x-5" : "translate-x-1"
         }`}
       />
@@ -40,16 +41,10 @@ type Props = {
 }
 
 export default function ToggleMode({ mode, setMode }: Props) {
-  const router = useRouter()
   const modeFree = mode === "free"
 
   function alternarModo(checked: boolean) {
     const newMode = checked ? "free" : "daily"
-
-    // Redirecionar se estiver no modo "challenge"
-    if (mode === "challenge") {
-      router.push("/")
-    }
 
     setMode(newMode)
 
@@ -64,13 +59,24 @@ export default function ToggleMode({ mode, setMode }: Props) {
 
   return (
     <div className="flex items-center justify-center gap-2 mb-6">
-      <span className={`text-sm font-medium ${!modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
-        Diário
-      </span>
-      <Switch checked={modeFree} onCheckedChange={alternarModo} id="modo-jogo" />
-      <span className={`text-sm font-medium ${modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
-        Livre
-      </span>
+      {mode === "challenge" ? (
+        <Link href="/">
+          <button onClick={() => setMode('daily')} className="flex items-center text-[#eee] text-sm font-medium hover:text-black hover:bg-white rounded-md px-4 py-2">
+            <X className="mr-2 h-4 w-4" />
+            Sair do Desafio
+          </button>
+        </Link>
+      ): (
+        <>
+          <span className={`text-sm font-medium ${!modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+            Diário
+          </span>
+          <Switch checked={modeFree} onCheckedChange={alternarModo} id="modo-jogo" />
+          <span className={`text-sm font-medium ${modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+            Livre
+          </span>
+        </>
+      )}
     </div>
   )
 }

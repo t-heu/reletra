@@ -55,53 +55,42 @@ export default function Page() {
   // Carregar estatísticas do localStorage
   useEffect(() => {
     const estatisticasSalvas = localStorage.getItem("desletra-statistics")
-    if (estatisticasSalvas) {
-      setStatistics(JSON.parse(estatisticasSalvas))
-    }
+    if (estatisticasSalvas) setStatistics(JSON.parse(estatisticasSalvas))
   }, [])
 
   // loser
   useEffect(() => {
-    if (lose) {
-      const save: any = localStorage.getItem("gameStored");
-      const stored = JSON.parse(save)
-      
-      if (mode === "daily" && !stored.endGame) {
-        saveGameState({ endGame: true });
-        
-        updateStatistics(statistics, false, tentativas)
+    if (!lose) return;
 
-        getAnalyticsIfSupported().then((analytics) => {
-          if (analytics) {
-            logEvent(analytics, "game_lost", {
-              mode,
-              attempts: attempts.length,
-            });
-          }
-        });
-      }
+    const save = localStorage.getItem("gameStored");
+    const stored = save ? JSON.parse(save) : {};
 
-      if (mode === 'daily') setShowStatistics(true);
-
-      if (mode === 'free') {
-        getAnalyticsIfSupported().then((analytics) => {
-          if (analytics) {
-            logEvent(analytics, "game_lost", {
-              mode,
-              attempts: attempts.length,
-            });
-          }
-        });
-      }
-
-      setIsLose(true);
+    if (mode === "daily" && !stored.endGame) {
+      saveGameState({ endGame: true });
+      updateStatistics(statistics, false, tentativas);
+      getAnalyticsIfSupported().then((analytics) => {
+        if (analytics) {
+          logEvent(analytics, "game_lost", { mode, attempts: tentativas });
+        }
+      });
     }
-  }, [lose])
+
+    if (mode === "daily") setShowStatistics(true);
+
+    if (mode === "free") {
+      getAnalyticsIfSupported().then((analytics) => {
+        if (analytics) {
+          logEvent(analytics, "game_lost", { mode, attempts: tentativas });
+        }
+      });
+    }
+
+    setIsLose(true);
+  }, [lose]);
 
   // Inicializa o jogo
   useEffect(() => {
-    const today = new Date().toLocaleDateString("pt-BR")
-
+    const today = new Date().toLocaleDateString("pt-BR");
     const urlParams = new URLSearchParams(window.location.search);
     const challengeParam = urlParams.get("challenge");
 
@@ -114,79 +103,50 @@ export default function Page() {
 
     if (mode === "daily") {
       const stored = localStorage.getItem("gameStored");
-
       const {
         ultimoJogo,
-        attempts: tentativasSalvas,
-        isCorrect: acertouSalvo,
-        endGame,
+        attempts: savedAttempts = [],
+        isCorrect: savedCorrect = false,
+        endGame = false,
         letterHints: {
           correct = [],
           wrong = [],
           exists = []
         } = {}
-      } = stored ? JSON.parse(stored) : {
-        ultimoJogo: "",
-        attempts: [],
-        isCorrect: false,
-        endGame: false,
-        letterHints: { correct: [], wrong: [], exists: [] }
-      };
+      } = stored ? JSON.parse(stored) : {};
 
-      if (endGame && !acertouSalvo) {
-        setIsLose(true);
-      }
-
-      if (!ultimoJogo) setShowHowToPlay(true)
+      if (endGame && !savedCorrect) setIsLose(true);
+      if (!ultimoJogo) setShowHowToPlay(true);
 
       if (ultimoJogo === today) {
-        setAttempts(tentativasSalvas)
-        setIsCorrect(acertouSalvo)
-
-        if (acertouSalvo) setShowStatistics(true);
-
-        const lettersC = new Set<string>(correct);
-        const lettersI = new Set<string>(wrong);
-        const lettersE = new Set<string>(exists);
-
-        setCorrectLetters(lettersC)
-        setWrongLetters(lettersI)
-        setExistingLetters(lettersE)
+        setAttempts(savedAttempts);
+        setIsCorrect(savedCorrect);
+        if (savedCorrect) setShowStatistics(true);
+        setCorrectLetters(new Set(correct));
+        setWrongLetters(new Set(wrong));
+        setExistingLetters(new Set(exists));
       } else {
-        const clearSave = {
+        const reset = {
           ultimoJogo: today,
           attempts: [],
           isCorrect: false,
           endGame: false,
-          letterHints: {
-            correct: [],
-            wrong: [],
-            exists: []
-          }
+          letterHints: { correct: [], wrong: [], exists: [] }
         };
 
-        localStorage.setItem("gameStored", JSON.stringify(clearSave));
-
-        setAttempts([])
-        setIsCorrect(false)
-        setIsLose(false)
-        setCorrectLetters(new Set())
-        setWrongLetters(new Set())
-        setExistingLetters(new Set())
+        localStorage.setItem("gameStored", JSON.stringify(reset));
+        setAttempts([]);
+        setIsCorrect(false);
+        setIsLose(false);
+        setCorrectLetters(new Set());
+        setWrongLetters(new Set());
+        setExistingLetters(new Set());
       }
 
-      const palavraDoDia = generateDailyWord()
-      setWord(palavraDoDia)
-    } else if (mode === "free") {
-      const novaPalavra = generateRandomWord()
-      setWord(novaPalavra)
-      setAttempts([])
-      setIsCorrect(false)
-      setIsLose(false)
-      setCorrectLetters(new Set())
-      setWrongLetters(new Set())
-      setExistingLetters(new Set())
+      setWord(generateDailyWord());
     } else {
+      const newWord = mode === "free" ? generateRandomWord() : "";
+      setWord(newWord);
       setAttempts([]);
       setIsCorrect(false);
       setIsLose(false);
@@ -383,19 +343,18 @@ export default function Page() {
                   </>
                 ) : (
                   <>
-                    <h3 className="text-xl mb-1">QUE PENA!</h3>
                     {mode === "challenge" && (
-                      <p>
+                      <p className="font-sans">
                         A palavra do desafiou era: <strong>{word}</strong>
                       </p>
                     )}
                     {mode === "free" && (
-                      <p>
+                      <p className="font-sans">
                         A palavra era: <strong>{word}</strong>
                       </p>
                     )}
                     {mode === "daily" && (
-                      <p>
+                      <p className="font-sans">
                         A palavra de ontem era: <strong>{getYesterdayWord()}</strong>
                       </p>
                     )}
@@ -471,7 +430,7 @@ export default function Page() {
 
           {/* Botões para jogar novamente / sair, aparecem se mode = "livre" e jogo terminou */}
           {mode === "free" && (isCorrect || isLose) && (
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-2 justify-center mb-6">
               <ButtonComp text="Jogar Novamente" press={() => restartGame()} />
             </div>
           )}

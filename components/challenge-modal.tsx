@@ -3,6 +3,9 @@
 import { useState } from "react"
 import { X, Check, AlertTriangle, Copy } from "lucide-react"
 
+import { getAnalyticsIfSupported } from "../api/firebase";
+import { logEvent } from "firebase/analytics";
+
 import {checkWords} from "../utils/check-words"
 import {generateChallengeLink} from "../utils/generate-challenge"
 
@@ -17,18 +20,35 @@ export default function challengeModal({ onClose }: DesafioModalProps) {
   const [url, setUrl] = useState<null | string>(null)
 
   async function handleSubmit() {
-    setIsSubmitting(true)
     if (!word) return;
 
-    if (checkWords(word.toUpperCase())) {
-      setIsValid(false)
-      setIsSubmitting(false)
-      return;
+    setIsSubmitting(true)
+
+    try {
+      const upperWord = word.toUpperCase();
+
+      const isAlreadyUsed = checkWords(upperWord);
+      if (isAlreadyUsed) {
+        setIsValid(false)
+        setIsSubmitting(false)
+        return;
+      }
+
+      setIsValid(true)
+      const uri = generateChallengeLink(word.toUpperCase());
+      setUrl(uri)
+      
+      getAnalyticsIfSupported().then((analytics) => {
+        if (analytics) {
+          logEvent(analytics, "challenge_created", {
+            word: upperWord,
+            mode: 'challenge',
+          });
+        }
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsValid(true)
-    const link = generateChallengeLink(word.toUpperCase());
-    setUrl(link)
-    setIsSubmitting(false)
   }
 
   function copy() {
