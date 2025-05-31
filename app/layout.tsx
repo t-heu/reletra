@@ -17,6 +17,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content="Desletra" />
         <meta property="og:description" content="Desafie-se a desletrar uma nova palavra a cada dia!" />
         <meta property="og:image" content="https://desletra.onrender.com/assets/web-app-manifest-192x192.png" />
@@ -27,7 +29,6 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="512x512" href="/assets/web-app-manifest-512x512.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#020817" />
-        <meta name="description" content="Desafie-se a desletrar uma nova palavra a cada dia!" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://desletra.onrender.com/" />
         <meta name="keywords" content="desletra, desletrar, palavras" />
