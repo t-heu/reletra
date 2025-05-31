@@ -21,6 +21,11 @@ export default function RootLayout({
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://desletra.onrender.com/" />
         <meta name="keywords" content="desletra, desletrar, palavras" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png" />
+        <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Desletra" />
+        <meta name="application-name" content="Desletra" />
         {/* Open Graph */}
         <meta property="og:title" content="Desletra" />
         <meta property="og:description" content="Desafie-se a desletrar uma nova palavra a cada dia!" />
