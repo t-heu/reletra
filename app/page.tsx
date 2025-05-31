@@ -7,6 +7,12 @@ import { getAnalyticsIfSupported } from "../api/firebase";
 import { logEvent } from "firebase/analytics";
 
 import { removeAccents } from "../utils/remove-accents"
+import {decodeWord} from "../utils/generate-challenge"
+import {generateDailyWord, generateRandomWord, getYesterdayWord} from "../utils/generate-words"
+import {checkWords} from "../utils/check-words"
+import {saveGameState, updateStatistics} from "../utils/localStorage-utils"
+
+import validWords from "../validWords.json";
 
 import ButtonComp from "../components/button"
 import {renderKeyboard} from "../components/render-keyboard"
@@ -16,9 +22,7 @@ import HowToPlay from "../components/how-to-play"
 import Header from "../components/header"
 import Statistics from "../components/statistics"
 import AdBanner from "../components/ad-banner"
-
-import validWords from "../validWords.json";
-import {generateDailyWord, generateRandomWord, getYesterdayWord} from "../utils/generateWords"
+import ChallengeModal from "../components/challenge-modal"
 
 export default function Page() {
   const [word, setWord] = useState("")
@@ -29,10 +33,11 @@ export default function Page() {
   const [correctLetters, setCorrectLetters] = useState<Set<string>>(new Set())
   const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
   const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
-  const [mode, setMode] = useState<"daily" | "free">("daily")
+  const [mode, setMode] = useState<"daily" | "free" | "challenge">("daily");
   const [showHowToPlay, setShowHowToPlay] = useState(false)
   const [showAlert, setShowAlert] = useState<string | null>(null)
   const [showStatistics, setShowStatistics] = useState(false)
+  const [showCreateChallenge, setShowCreateChallenge] = useState(false)
   const [statistics, setStatistics] = useState({
     played: 0,
     wins: 0,
@@ -45,7 +50,6 @@ export default function Page() {
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
   const wordList = (validWords as {words: string[]}).words;
-
   const tentativas = attempts.length
 
   // Carregar estatísticas do localStorage
@@ -56,6 +60,7 @@ export default function Page() {
     }
   }, [])
 
+  // loser
   useEffect(() => {
     if (lose) {
       const save: any = localStorage.getItem("gameStored");
@@ -64,7 +69,7 @@ export default function Page() {
       if (mode === "daily" && !stored.endGame) {
         saveGameState({ endGame: true });
         
-        atualizarEstatisticas(false, tentativas)
+        updateStatistics(statistics, false, tentativas)
 
         getAnalyticsIfSupported().then((analytics) => {
           if (analytics) {
@@ -96,6 +101,16 @@ export default function Page() {
   // Inicializa o jogo
   useEffect(() => {
     const today = new Date().toLocaleDateString("pt-BR")
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const challengeParam = urlParams.get("challenge");
+
+    if (challengeParam) {
+      const decoded = decodeWord(challengeParam);
+      setWord(decoded.toUpperCase());
+      setMode("challenge");
+      return;
+    }
 
     if (mode === "daily") {
       const stored = localStorage.getItem("gameStored");
@@ -162,7 +177,7 @@ export default function Page() {
 
       const palavraDoDia = generateDailyWord()
       setWord(palavraDoDia)
-    } else {
+    } else if (mode === "free") {
       const novaPalavra = generateRandomWord()
       setWord(novaPalavra)
       setAttempts([])
@@ -171,31 +186,15 @@ export default function Page() {
       setCorrectLetters(new Set())
       setWrongLetters(new Set())
       setExistingLetters(new Set())
+    } else {
+      setAttempts([]);
+      setIsCorrect(false);
+      setIsLose(false);
+      setCorrectLetters(new Set());
+      setWrongLetters(new Set());
+      setExistingLetters(new Set());
     }
   }, [mode]);
-
-  // Salvar estatísticas no localStorage
-  function salvarEstatisticas(novasEstatisticas: typeof statistics) {
-    setStatistics(novasEstatisticas)
-    localStorage.setItem("desletra-statistics", JSON.stringify(novasEstatisticas))
-  }
-
-  // Atualizar estatísticas quando o jogo termina
-  function atualizarEstatisticas(ganhou: boolean, tentativasUsadas: number) {
-    const novasEstatisticas = { ...statistics }
-
-    novasEstatisticas.played += 1
-
-    if (ganhou) {
-      novasEstatisticas.wins += 1
-      novasEstatisticas.currentStreak += 1
-      novasEstatisticas.maxStreak = Math.max(novasEstatisticas.maxStreak, novasEstatisticas.currentStreak)
-      novasEstatisticas.distribution[tentativasUsadas] += 1
-    } else {
-      novasEstatisticas.currentStreak = 0
-    }
-    salvarEstatisticas(novasEstatisticas)
-  }
 
   // Verifica o palpite do jogador
   const checkGuess = () => {
@@ -206,8 +205,7 @@ export default function Page() {
     const palavraNormalizada = removeAccents(word);
 
     // 🛑 Bloqueia se palavra não estiver na lista
-    const normalizedWordList = wordList.map(w => removeAccents(w.toUpperCase()));
-    if (!normalizedWordList.includes(palpiteNormalizado)) {
+    if (checkWords(palpiteNormalizado)) {
       setShowAlert('Palavra não reconhecida');
       return;
     }
@@ -233,7 +231,7 @@ export default function Page() {
 
     if (acertou) {
       setIsCorrect(true);
-      atualizarEstatisticas(true, attempts.length);
+      updateStatistics(statistics, true, attempts.length);
       setShowStatistics(true);
 
       getAnalyticsIfSupported().then((analytics) => {
@@ -295,18 +293,6 @@ export default function Page() {
     setGuess("");
   };
 
-  function saveGameState(novosDados: any) {
-    const estadoAtualRaw = localStorage.getItem("gameStored");
-    const estadoAtual = estadoAtualRaw ? JSON.parse(estadoAtualRaw) : {};
-
-    const novoEstado = {
-      ...estadoAtual,
-      ...novosDados,
-    };
-
-    localStorage.setItem("gameStored", JSON.stringify(novoEstado));
-  }
-
   const restartGame = (len?: number) => {
     setGuess("");
     setIsCorrect(false);
@@ -316,7 +302,7 @@ export default function Page() {
     setWrongLetters(new Set());
     setExistingLetters(new Set());
 
-    if (mode === 'free') {
+    if (mode === 'free' || mode === 'challenge') {
       const novaPalavra = generateRandomWord(len)
       setWord(novaPalavra);
 
@@ -343,7 +329,7 @@ export default function Page() {
   
   return (
     <main> 
-      <Header wordLength={wordLength} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
+      <Header wordLength={wordLength} setShowCreateChallenge={setShowCreateChallenge} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
@@ -354,6 +340,12 @@ export default function Page() {
             statistics={statistics}
             ultimaVitoria={isCorrect}
             tentativasUltimaPalavra={tentativas}
+          />
+        )}
+
+        {showCreateChallenge && (
+          <ChallengeModal
+            onClose={() => setShowCreateChallenge(false)}
           />
         )}
         <div className="w-full max-w-[500px]">

@@ -31,10 +31,11 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
           <li>Cada palpite deve ser uma palavra válida.</li>
           <li>As palavras variam de 3 a 6 ou mais letras!</li>
           <li>
-            Há dois modos de jogo:
+            Há três modos de jogo:
             <ul className="list-disc pl-5">
               <li><strong>Modo Diário:</strong> uma palavra nova por dia, igual para todos os jogadores.</li>
               <li><strong>Modo Livre:</strong> jogue quantas vezes quiser com palavras aleatórias.</li>
+              <li><strong>Modo Desafio:</strong> envie uma palavra para um amigo tentar adivinhar.</li>
             </ul>
           </li>
           <li>

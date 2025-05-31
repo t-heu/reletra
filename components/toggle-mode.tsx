@@ -1,4 +1,7 @@
+"use client"
+
 import { HTMLAttributes } from "react"
+import { useRouter } from "next/navigation"
 
 import { getAnalyticsIfSupported } from "../api/firebase";
 import { logEvent } from "firebase/analytics";
@@ -32,31 +35,40 @@ export function Switch({ checked, onCheckedChange, id, ...props }: SwitchProps) 
 }
 
 type Props = {
-  mode: "daily" | "free"
-  setMode: (mode: "daily" | "free") => void
+  mode: "daily" | "free" |  "challenge"
+  setMode: (mode: "daily" | "free" | "challenge") => void
 }
 
 export default function ToggleMode({ mode, setMode }: Props) {
-  const modoLivre = mode === "free"
+  const router = useRouter()
+  const modeFree = mode === "free"
 
   function alternarModo(checked: boolean) {
-    setMode(checked ? "free" : "daily")
+    const newMode = checked ? "free" : "daily"
+
+    // Redirecionar se estiver no modo "challenge"
+    if (mode === "challenge") {
+      router.push("/")
+    }
+
+    setMode(newMode)
+
     getAnalyticsIfSupported().then((analytics) => {
       if (analytics) {
         logEvent(analytics, "mode_switched", {
-          new_mode: mode,
-        });
+          new_mode: newMode,
+        })
       }
-    });
+    })
   }
 
   return (
     <div className="flex items-center justify-center gap-2 mb-6">
-      <span className={`text-sm font-medium ${!modoLivre ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+      <span className={`text-sm font-medium ${!modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
         Diário
       </span>
-      <Switch checked={modoLivre} onCheckedChange={alternarModo} id="modo-jogo" />
-      <span className={`text-sm font-medium ${modoLivre ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+      <Switch checked={modeFree} onCheckedChange={alternarModo} id="modo-jogo" />
+      <span className={`text-sm font-medium ${modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
         Livre
       </span>
     </div>

@@ -52,7 +52,7 @@ export default function About() {
           </a>
         </p>
         <p className="text-sm text-gray-400 text-center mt-4">
-          Versão 1.3.2 • © {new Date().getFullYear()} Desletra
+          © {new Date().getFullYear()} Desletra
         </p>
       </div>
     </main>

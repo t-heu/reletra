@@ -5,17 +5,22 @@ import {
   HelpCircle,
   Settings,
   RotateCcw,
-  ChartNoAxesColumnDecreasing 
+  ChartNoAxesColumnDecreasing,
+  CirclePlus 
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
+
+import {checkWords} from "../utils/check-words"
+import {generateChallengeLink} from "../utils/generate-challenge"
 
 type Props = {
   howToPlay: (v: boolean) => void
   restartGame: (len?: number) => void
   wordLength: any
   setWordLength: any
-  mode: "daily" | "free"
+  mode: "daily" | "free" | "challenge"
   setShowStatistics: any
+  setShowCreateChallenge: any
 }
 
 export default function Header({
@@ -24,7 +29,8 @@ export default function Header({
   restartGame,
   setShowStatistics,
   wordLength,
-  setWordLength
+  setWordLength,
+  setShowCreateChallenge
 }: Props) {
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -51,6 +57,13 @@ export default function Header({
           title="Como jogar"
         >
           <HelpCircle className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => setShowCreateChallenge(true)}
+          className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+          title="Desafiar seu amigo"
+        >
+          <CirclePlus className="h-5 w-5" />
         </button>
         {mode === 'free' && (<button
             onClick={() => restartGame()}

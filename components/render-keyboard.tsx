@@ -128,33 +128,6 @@ export const renderKeyboard = ({
     ["ENTER", ..."ZXCVBNM".split(""), "DELETE"]
   ];
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isCorrect || lose) return;
-
-      const key = e.key.toUpperCase();
-
-      if (key === "ENTER") {
-        if (guess.length === word.length) {
-          checkGuess();
-        }
-        return;
-      }
-
-      if (key === "BACKSPACE") {
-        setGuess((prev) => prev.slice(0, -1));
-        return;
-      }
-
-      if (/^[A-ZÀ-Ú]$/.test(key) && guess.length < word.length) {
-        setGuess((prev) => prev + key);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [guess, word, isCorrect, lose]);
-
   return (
     <div className="w-full max-w-lg mx-auto p-2 space-y-2">
       {rows.map((row, rowIndex) => (

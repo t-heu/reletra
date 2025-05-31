@@ -91,6 +91,16 @@ function Badge({ children, className = '' }: BadgeProps) {
 export default function Changelog() {
   const changelog = [
     {
+      version: "v1.3.3",
+      date: "31 de Maio, 2025",
+      description: "Novo modo de jogo e melhorias de usabilidade",
+      changes: [
+        { type: "new", text: "Adicionado Modo Desafio para enviar palavras a amigos" },
+        { type: "new", text: "Campo de link com botão de copiar para compartilhar desafios" },
+        { type: "improvement", text: "Texto de instruções atualizado com o novo modo" },
+      ],
+    },
+    {
       version: "v1.3.2",
       date: "30 de Maio, 2025",
       description: "Melhorias de performance",
