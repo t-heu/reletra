@@ -384,6 +384,11 @@ export default function Page() {
                 ) : (
                   <>
                     <h3 className="text-xl mb-1">QUE PENA!</h3>
+                    {mode === "challenge" && (
+                      <p>
+                        A palavra do desafiou era: <strong>{word}</strong>
+                      </p>
+                    )}
                     {mode === "free" && (
                       <p>
                         A palavra era: <strong>{word}</strong>
