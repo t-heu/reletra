@@ -288,7 +288,8 @@ export default function Page() {
   const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
   
   return (
-    <main> 
+    <main>
+      <div className="scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent overflow-y-auto" />
       <Header wordLength={wordLength} setShowCreateChallenge={setShowCreateChallenge} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
       <div className="container mx-auto px-4 py-4 flex justify-center">
@@ -308,6 +309,7 @@ export default function Page() {
             onClose={() => setShowCreateChallenge(false)}
           />
         )}
+
         <div className="w-full max-w-[500px]">
           <div className="flex gap-2 justify-center">
             <ToggleMode mode={mode} setMode={setMode} />
@@ -375,8 +377,8 @@ export default function Page() {
                       key={`${rowIndex}-${colIndex}`}
                       className="bg-slate-700 rounded border-2 border-slate-600"
                       style={{
-                        width: `clamp(45px, 16vw, 62px)`,
-                        height: `clamp(45px, 16vw, 62px)`,
+                        width: `clamp(45px, 16vw, 72px)`,
+                        height: `clamp(45px, 16vw, 72px)`,
                       }}
                     />
                   ))}
@@ -401,8 +403,8 @@ export default function Page() {
                             isActive ? "border-[#F57C00] animate-pulse" : "border-[#1e293b]"
                           }`}
                           style={{
-                            width: `clamp(45px, ${80 / word.length}vw, 62px)`,
-                            height: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                            width: `clamp(45px, ${80 / word.length}vw, 72px)`,
+                            height: `clamp(45px, ${80 / word.length}vw, 72px)`,
                             fontSize: `2rem`
                           }}
                         >
@@ -416,8 +418,8 @@ export default function Page() {
                         key={`${index}-${letraIndex}`}
                         className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
                         style={{
-                          width: `clamp(45px, ${80 / word.length}vw, 62px)`,
-                          height: `clamp(45px, ${80 / word.length}vw, 62px)`,
+                          width: `clamp(45px, ${80 / word.length}vw, 72px)`,
+                          height: `clamp(45px, ${80 / word.length}vw, 72px)`,
                           fontSize: `2rem`
                         }}
                       />

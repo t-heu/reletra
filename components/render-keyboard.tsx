@@ -133,9 +133,6 @@ export const renderKeyboard = ({
         <div 
           key={rowIndex} 
           className="flex justify-center gap-1 sm:gap-2"
-          style={{
-            paddingLeft: '0.5rem'
-          }}
         >
           {row.map((letra) => (
             <Key

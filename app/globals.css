@@ -14,6 +14,19 @@ body {
   }
 }
 
+/* Scrollbar escuro e fino */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #0a1121; /* zinc-700 */
+  border-radius: 9999px;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
