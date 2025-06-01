@@ -16,7 +16,7 @@ type KeyProps = {
   word: string;
 };
 
-function Key({
+export function Key({
   letra,
   isSpecial = false,
   correctLetters,
@@ -32,7 +32,6 @@ function Key({
   const isDelete = letra === "DELETE";
   const isEnter = letra === "ENTER";
 
-  // Determine key colors based on state
   let bgColor = "bg-transparent";
   let borderColor = "border border-[#1e293b]";
   let textColor = "text-[#eee]";
@@ -65,19 +64,16 @@ function Key({
     (isEnter && guess.length !== word.length) ||
     (isDelete && guess.length === 0);
 
-  // Base classes for all keys
   const baseClasses = `
     rounded font-bold active:scale-95 transition-all
     flex items-center justify-center
-    border-2 ${borderColor}
-    ${textColor} ${bgColor}
+    ${borderColor} ${textColor} ${bgColor}
     disabled:opacity-50 disabled:cursor-not-allowed
   `;
 
-  // Size classes based on key type
   const sizeClasses = isSpecial
-    ? "w-14 sm:w-16 md:w-20 px-2"
-    : "w-14 sm:w-10 md:w-12";
+    ? "w-[60px] sm:w-[65px] md:w-[70px]"
+    : "w-[43px] sm:w-[45px] md:w-[48px]";
 
   return (
     <button
@@ -90,7 +86,7 @@ function Key({
       {isDelete ? (
         <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
       ) : (
-        <span className="text-sm sm:text-base md:text-lg">
+        <span className="text-sm sm:text-base md:text-lg uppercase">
           {letra}
         </span>
       )}
@@ -124,16 +120,13 @@ export const renderKeyboard = ({
   const rows = [
     "QWERTYUIOP".split(""),
     "ASDFGHJKL".split(""),
-    ["ENTER", ..."ZXCVBNM".split(""), "DELETE"]
+    ["ENTER", ..."ZXCVBNM".split(""), "DELETE"],
   ];
 
   return (
-    <div className="w-full max-w-lg mx-auto space-y-2">
+    <div className="w-full max-w-lg mx-auto space-y-2 p-2 rounded-md">
       {rows.map((row, rowIndex) => (
-        <div 
-          key={rowIndex} 
-          className="flex justify-center gap-1 sm:gap-2"
-        >
+        <div key={rowIndex} className="flex justify-center gap-1 sm:gap-2">
           {row.map((letra) => (
             <Key
               key={letra}
