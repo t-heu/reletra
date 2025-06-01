@@ -13,8 +13,8 @@ const renderLetter = (
     "font-roboto flex items-center justify-center font-bold transition-none text-white rounded-md";
 
   const dynamicStyle = {
-    width: `clamp(45px, ${80 / word.length}vw, 72px)`,
-    height: `clamp(45px, ${80 / word.length}vw, 72px)`,
+    width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
+    height: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
     fontSize: `2rem`
   };
 

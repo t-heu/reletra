@@ -59,7 +59,7 @@ export default function ToggleMode({ mode, setMode }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mb-6">
+    <div className="flex items-center justify-center gap-2">
       {mode === "challenge" ? (
         <Link href="/">
           <button onClick={() => setMode('daily')} className="flex items-center text-[#eee] text-sm font-medium hover:text-black hover:bg-white rounded-md px-4 py-2">

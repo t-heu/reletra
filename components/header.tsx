@@ -47,7 +47,7 @@ export default function Header({
   }, [])
 
   return (
-    <header className="w-full flex justify-around items-center mt-4 mb-2">
+    <header className="w-full flex justify-around items-center mt-3 mb-2">
       <div className="w-full max-w-[500px] flex justify-between items-center px-2">
         {/* Botão de ajuda */}
         <div>

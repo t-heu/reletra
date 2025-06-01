@@ -148,6 +148,7 @@ export default function Page() {
           wrong: new Set(),
           exists: new Set(),
         }));
+        setShowAlert(null)
       }
 
       setWord(generateDailyWord());
@@ -163,6 +164,7 @@ export default function Page() {
         wrong: new Set(),
         exists: new Set(),
       }));
+      setShowAlert(null)
     }
   }, [mode]);
 
@@ -304,11 +306,10 @@ export default function Page() {
   const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
   
   return (
-    <main>
-      <div className="scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent overflow-y-auto" />
+    <main className="h-screen flex flex-col justify-between">
       <Header wordLength={wordLength} setShowCreateChallenge={setShowCreateChallenge} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
 
-      <div className="container mx-auto px-4 py-4 flex justify-center">
+      <div className="flex-1 min-h-0 overflow-y-auto container mx-auto px-2 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
 
         {showStatistics && (
@@ -327,14 +328,14 @@ export default function Page() {
         )}
 
         <div className="w-full max-w-[600px]">
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 justify-center mb-4 mt-2">
             <ToggleMode mode={mode} setMode={setMode} />
           </div>
 
           {/* Alert de jogo */}
           {showAlert && (
-            <div className="flex w-full justify-center mb-2 mt-2">
-              <div className="bg-red-500/20 text-red-500 flex items-center gap-2 px-4 py-2 rounded-md animate-bounce">
+            <div className="flex w-full justify-center relative">
+              <div className="font-sans bg-red-500/20 text-red-500 flex items-center gap-2 px-4 py-2 rounded-md animate-bounce">
                 <AlertCircle className="h-4 w-4" />
                 <span>{showAlert}</span>
               </div>
@@ -343,7 +344,7 @@ export default function Page() {
 
           {/* Alert de acerto */}
           {(isCorrect || isLose) && (
-            <div className="flex w-full justify-center mb-5">
+            <div className="flex justify-center relative mb-2">
               <div
                 className={`font-semibold p-2 rounded-lg border-2 text-center ${
                   isCorrect
@@ -363,17 +364,17 @@ export default function Page() {
                   <>
                     {mode === "challenge" && (
                       <p className="font-sans">
-                        A palavra do desafiou era: <strong>{word}</strong>
+                        Desafiou era: <strong>{word}</strong>
                       </p>
                     )}
                     {mode === "free" && (
                       <p className="font-sans">
-                        A palavra era: <strong>{word}</strong>
+                        Era: <strong>{word}</strong>
                       </p>
                     )}
                     {mode === "daily" && (
                       <p className="font-sans">
-                        A palavra de ontem era: <strong>{getYesterdayWord()}</strong>
+                        Ontem era: <strong>{getYesterdayWord()}</strong>
                       </p>
                     )}
                   </>
@@ -419,8 +420,8 @@ export default function Page() {
                             isActive ? "border-[#F57C00] animate-pulse" : "border-[#1e293b]"
                           }`}
                           style={{
-                            width: `clamp(45px, ${80 / word.length}vw, 72px)`,
-                            height: `clamp(45px, ${80 / word.length}vw, 72px)`,
+                            width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
+                            height: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
                             fontSize: `2rem`
                           }}
                         >
@@ -434,8 +435,8 @@ export default function Page() {
                         key={`${index}-${letraIndex}`}
                         className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl rounded-md"
                         style={{
-                          width: `clamp(45px, ${80 / word.length}vw, 72px)`,
-                          height: `clamp(45px, ${80 / word.length}vw, 72px)`,
+                          width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
+                          height: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
                           fontSize: `2rem`
                         }}
                       />
