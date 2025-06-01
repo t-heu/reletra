@@ -13,6 +13,4 @@ export function generateChallengeLink(palavra: string) {
   const encoded = encodeWord(palavra);
   const url = `${window.location.origin}?challenge=${encoded}`;
   return url;
-  //navigator.clipboard.writeText(url);
-  //alert("Link copiado! Envie para seu amigo.");
 }

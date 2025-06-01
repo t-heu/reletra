@@ -50,10 +50,10 @@ const getDayOfYear = (date: Date): number => {
   );
 };
 
-export const getYesterdayWord = (): string => {
+export const getYesterdayWord = (daysAgo: number = 1): string => {
   const lengths = [3, 4, 5, 6];
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday.setDate(yesterday.getDate() - daysAgo);
 
   const dayOfYear = getDayOfYear(yesterday);
   const length = lengths[dayOfYear % lengths.length];

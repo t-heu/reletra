@@ -97,6 +97,7 @@ export default function Changelog() {
       changes: [
         { type: "new", text: "Adicionado Modo Desafio para enviar palavras a amigos" },
         { type: "new", text: "Campo de link com botão de copiar para compartilhar desafios" },
+        { type: "new", text: "Histórico de temas de 1 semana." },
         { type: "improvement", text: "Texto de instruções atualizado com o novo modo" },
       ],
     },
@@ -152,7 +153,7 @@ export default function Changelog() {
     <main className="min-h-screen bg-[#020817] text-white p-4">
       <div className="max-w-3xl mx-auto py-8">
         <Link href="/">
-          <button className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
+          <button title="Voltar" className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </button>

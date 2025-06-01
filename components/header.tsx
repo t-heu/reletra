@@ -8,7 +8,8 @@ import {
   ChartNoAxesColumnDecreasing,
   CirclePlus,
   CircleAlert,
-  Milestone
+  Milestone,
+  History 
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 
@@ -98,6 +99,7 @@ export default function Header({
               <>
                 <Link href="/changelog">
                   <button 
+                    title="Changelog"
                     className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
                     <Milestone className="h-5 w-5" />
                     Changelog
@@ -105,13 +107,23 @@ export default function Header({
                 </Link>
                 <Link href="/about">
                   <button 
+                    title="Sobre"
                     className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
                     <CircleAlert className="h-5 w-5" />
                     Sobre
                   </button>
                 </Link>
+                <Link href="/history ">
+                  <button 
+                    title="Histórico"
+                    className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                    <History className="h-5 w-5" />
+                    Histórico
+                  </button>
+                </Link>
                 {mode === 'free' && (
                   <button 
+                    title="Resetar tema"
                     onClick={() => restartGame()}
                     className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
                     <RotateCcw className="h-5 w-5" />

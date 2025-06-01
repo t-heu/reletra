@@ -13,7 +13,7 @@ export default function About() {
     <main className="min-h-screen inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-[#1a1b2f] text-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
         <Link href="/">
-          <button className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
+          <button title="Voltar" className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </button>
