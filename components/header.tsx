@@ -53,14 +53,14 @@ export default function Header({
         <div>
           <button
             onClick={() => howToPlay(true)}
-            className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+            className="border-2 border-[#1e293b] p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
             title="Como jogar"
           >
             <HelpCircle className="h-5 w-5" />
           </button>
           <button
             onClick={() => setShowCreateChallenge(true)}
-            className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+            className="border-2 border-[#1e293b] mx-1 p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
             title="Desafiar seu amigo"
           >
             <CirclePlus className="h-5 w-5" />
@@ -76,14 +76,14 @@ export default function Header({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setShowStatistics(true)}
-            className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+            className="border-2 border-[#1e293b] mx-1 p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
             title="Estatísticas"
           >
             <ChartNoAxesColumnDecreasing className="h-5 w-5" />
           </button>
           <button
             onClick={() => setOpenDropdown(!openDropdown)}
-            className="p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
+            className="border-2 border-[#1e293b] p-2 rounded hover:bg-[#1e293b] dark:hover:bg-gray-700 text-white"
             title="Configurações"
           >
             <Settings className="h-5 w-5" />

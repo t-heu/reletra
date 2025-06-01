@@ -10,7 +10,7 @@ import { removeAccents } from "../utils/remove-accents"
 import {decodeWord} from "../utils/generate-challenge"
 import {generateDailyWord, generateRandomWord, getYesterdayWord} from "../utils/generate-words"
 import {checkWords} from "../utils/check-words"
-import {saveGameState, updateStatistics} from "../utils/localStorage-utils"
+import {saveGameState, updateStatistics, getGameState} from "../utils/localStorage-utils"
 
 import validWords from "../validWords.json";
 
@@ -30,14 +30,12 @@ export default function Page() {
   const [attempts, setAttempts] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
   const [isLose, setIsLose] = useState(false)
-  const [correctLetters, setCorrectLetters] = useState<Set<string>>(new Set())
-  const [wrongLetters, setWrongLetters] = useState<Set<string>>(new Set())
-  const [existingLetters, setExistingLetters] = useState<Set<string>>(new Set())
+  const [lettersState, setLettersState] = useState({
+    correct: new Set<string>(),
+    wrong: new Set<string>(),
+    exists: new Set<string>(),
+  });
   const [mode, setMode] = useState<"daily" | "free" | "challenge">("daily");
-  const [showHowToPlay, setShowHowToPlay] = useState(false)
-  const [showAlert, setShowAlert] = useState<string | null>(null)
-  const [showStatistics, setShowStatistics] = useState(false)
-  const [showCreateChallenge, setShowCreateChallenge] = useState(false)
   const [statistics, setStatistics] = useState({
     played: 0,
     wins: 0,
@@ -46,6 +44,10 @@ export default function Page() {
     distribution: [0, 0, 0, 0, 0, 0]
   })
   const [wordLength, setWordLength] = useState<number | null>(null);
+  const [showHowToPlay, setShowHowToPlay] = useState(false)
+  const [showAlert, setShowAlert] = useState<string | null>(null)
+  const [showStatistics, setShowStatistics] = useState(false)
+  const [showCreateChallenge, setShowCreateChallenge] = useState(false)
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
@@ -62,8 +64,7 @@ export default function Page() {
   useEffect(() => {
     if (!lose) return;
 
-    const save = localStorage.getItem("gameStored");
-    const stored = save ? JSON.parse(save) : {};
+    const stored = getGameState();
 
     if (mode === "daily" && !stored.endGame) {
       saveGameState({ endGame: true });
@@ -102,7 +103,7 @@ export default function Page() {
     }
 
     if (mode === "daily") {
-      const stored = localStorage.getItem("gameStored");
+      const stored = getGameState()
       const {
         ultimoJogo,
         attempts: savedAttempts = [],
@@ -113,7 +114,7 @@ export default function Page() {
           wrong = [],
           exists = []
         } = {}
-      } = stored ? JSON.parse(stored) : {};
+      } = stored ? stored : {};
 
       if (endGame && !savedCorrect) setIsLose(true);
       if (!ultimoJogo) setShowHowToPlay(true);
@@ -122,9 +123,12 @@ export default function Page() {
         setAttempts(savedAttempts);
         setIsCorrect(savedCorrect);
         if (savedCorrect) setShowStatistics(true);
-        setCorrectLetters(new Set(correct));
-        setWrongLetters(new Set(wrong));
-        setExistingLetters(new Set(exists));
+        setLettersState(prev => ({
+          ...prev,
+          correct: new Set(correct),
+          wrong: new Set(wrong),
+          exists: new Set(exists),
+        }));
       } else {
         const reset = {
           ultimoJogo: today,
@@ -134,13 +138,16 @@ export default function Page() {
           letterHints: { correct: [], wrong: [], exists: [] }
         };
 
-        localStorage.setItem("gameStored", JSON.stringify(reset));
+        saveGameState({ reset });
         setAttempts([]);
         setIsCorrect(false);
         setIsLose(false);
-        setCorrectLetters(new Set());
-        setWrongLetters(new Set());
-        setExistingLetters(new Set());
+        setLettersState(prev => ({
+          ...prev,
+          correct: new Set(),
+          wrong: new Set(),
+          exists: new Set(),
+        }));
       }
 
       setWord(generateDailyWord());
@@ -150,9 +157,12 @@ export default function Page() {
       setAttempts([]);
       setIsCorrect(false);
       setIsLose(false);
-      setCorrectLetters(new Set());
-      setWrongLetters(new Set());
-      setExistingLetters(new Set());
+      setLettersState(prev => ({
+        ...prev,
+        correct: new Set(),
+        wrong: new Set(),
+        exists: new Set(),
+      }));
     }
   }, [mode]);
 
@@ -209,9 +219,9 @@ export default function Page() {
     }
 
     // Atualiza os sets de letras
-    const novasLetrasCorretas = new Set(correctLetters);
-    const novasLetrasIncorretas = new Set(wrongLetters);
-    const novasLetrasExistentes = new Set(existingLetters);
+    const novasLetrasCorretas = new Set(lettersState.correct);
+    const novasLetrasIncorretas = new Set(lettersState.wrong);
+    const novasLetrasExistentes = new Set(lettersState.exists);
 
     for (let i = 0; i < palpiteNormalizado.length; i++) {
       const letraNormalizada = palpiteNormalizado[i];
@@ -228,9 +238,12 @@ export default function Page() {
       }
     }
 
-    setCorrectLetters(novasLetrasCorretas);
-    setWrongLetters(novasLetrasIncorretas);
-    setExistingLetters(novasLetrasExistentes);
+    setLettersState(prev => ({
+      ...prev,
+      correct: novasLetrasCorretas,
+      wrong: novasLetrasIncorretas,
+      exists: novasLetrasExistentes,
+    }));
 
     if (mode === "daily") {
       const letterHints = {
@@ -258,9 +271,12 @@ export default function Page() {
     setIsCorrect(false);
     setIsLose(false)
     setAttempts([]);
-    setCorrectLetters(new Set());
-    setWrongLetters(new Set());
-    setExistingLetters(new Set());
+    setLettersState(prev => ({
+      ...prev,
+      correct: new Set(),
+      wrong: new Set(),
+      exists: new Set(),
+    }));
 
     if (mode === 'free' || mode === 'challenge') {
       const novaPalavra = generateRandomWord(len)
@@ -310,7 +326,7 @@ export default function Page() {
           />
         )}
 
-        <div className="w-full max-w-[500px]">
+        <div className="w-full max-w-[600px]">
           <div className="flex gap-2 justify-center">
             <ToggleMode mode={mode} setMode={setMode} />
           </div>
@@ -375,7 +391,7 @@ export default function Page() {
                   {Array.from({ length: 5 }).map((_, colIndex) => ( // usa 5 como placeholder
                     <div
                       key={`${rowIndex}-${colIndex}`}
-                      className="bg-slate-700 rounded border-2 border-slate-600"
+                      className="bg-slate-700 border-2 border-slate-600 rounded-md"
                       style={{
                         width: `clamp(45px, 16vw, 72px)`,
                         height: `clamp(45px, 16vw, 72px)`,
@@ -399,7 +415,7 @@ export default function Page() {
                       return (
                         <div
                           key={`${index}-${letraIndex}`}
-                          className={`font-playpen flex items-center justify-center font-bold transition-none text-white border-2 text-xl sm:text-2xl ${
+                          className={`font-playpen flex items-center justify-center font-bold transition-none text-white border-2 text-xl sm:text-2xl rounded-md ${
                             isActive ? "border-[#F57C00] animate-pulse" : "border-[#1e293b]"
                           }`}
                           style={{
@@ -416,7 +432,7 @@ export default function Page() {
                     return (
                       <div
                         key={`${index}-${letraIndex}`}
-                        className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl"
+                        className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl rounded-md"
                         style={{
                           width: `clamp(45px, ${80 / word.length}vw, 72px)`,
                           height: `clamp(45px, ${80 / word.length}vw, 72px)`,
@@ -439,9 +455,9 @@ export default function Page() {
 
           {/* Teclado */}
           {renderKeyboard({
-            correctLetters,
-            existingLetters,
-            wrongLetters,
+            correctLetters: lettersState.correct,
+            existingLetters: lettersState.exists,
+            wrongLetters: lettersState.wrong,
             setGuess,
             isCorrect,
             lose: isLose,

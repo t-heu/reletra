@@ -19,7 +19,7 @@ export default function About() {
           </button>
         </Link>
 
-        <h2 className="text-2xl font-bold mb-4 text-center">Sobre o Desletra</h2>
+        <h1 className="text-2xl font-bold mb-4 text-center">Sobre o Desletra</h1>
         <p className="mb-3">
           <strong>Desletra</strong> é um jogo de palavras inspirado em desafios como Wordle,
           mas com uma proposta única: desvendar a palavra oculta usando lógica e tentativas

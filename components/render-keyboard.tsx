@@ -32,8 +32,8 @@ export function Key({
   const isDelete = letra === "DELETE";
   const isEnter = letra === "ENTER";
 
-  let bgColor = "bg-transparent";
-  let borderColor = "border border-[#1e293b]";
+  let bgColor = "bg-[#777]";
+  let borderColor = "border border-[#777]";
   let textColor = "text-[#eee]";
 
   if (correctLetters.has(letra)) {
@@ -124,7 +124,7 @@ export const renderKeyboard = ({
   ];
 
   return (
-    <div className="w-full max-w-lg mx-auto space-y-2 p-2 rounded-md">
+    <div className="w-full max-w-lg mx-auto space-y-2 rounded-md">
       {rows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center gap-1 sm:gap-2">
           {row.map((letra) => (

@@ -2,7 +2,7 @@
 
 import { HTMLAttributes } from "react"
 import Link from "next/link"
-import { ArrowLeft, X } from "lucide-react"
+import { X } from "lucide-react"
 
 import { getAnalyticsIfSupported } from "../api/firebase";
 import { logEvent } from "firebase/analytics";
@@ -20,6 +20,7 @@ export function Switch({ checked, onCheckedChange, id, ...props }: SwitchProps) 
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-label={checked ? "Modo Livre" : "Modo Diário"}
       onClick={() => onCheckedChange(!checked)}
       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ${
         checked ? "bg-[#1e293b]" : "bg-[#eee]"
