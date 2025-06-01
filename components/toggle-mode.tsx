@@ -23,12 +23,12 @@ export function Switch({ checked, onCheckedChange, id, ...props }: SwitchProps) 
       aria-label={checked ? "Modo Livre" : "Modo Diário"}
       onClick={() => onCheckedChange(!checked)}
       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ${
-        checked ? "bg-[#1e293b]" : "bg-[#eee]"
+        checked ? "bg-[#CCCCCC]" : "bg-[#aaa]"
       }`}
       {...props}
     >
       <span
-        className={`inline-block h-5 w-5 transform rounded-full bg-[#020817] shadow transition-transform duration-200 hover:bg-[#0f172a] ${
+        className={`inline-block h-5 w-5 transform rounded-full bg-[#222] shadow transition-transform duration-200 hover:bg-[#0f172a] ${
           checked ? "translate-x-5" : "translate-x-1"
         }`}
       />

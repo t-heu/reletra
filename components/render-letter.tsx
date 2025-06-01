@@ -10,7 +10,7 @@ const renderLetter = (
   const letra = tentativa[letraIndex];
 
   const highlightClasses =
-    "font-roboto flex items-center justify-center font-bold transition-none text-white rounded-sm";
+    "font-bold flex items-center justify-center font-space transition-none text-white rounded-sm";
 
   const dynamicStyle = {
     width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
@@ -22,7 +22,7 @@ const renderLetter = (
     return <div key={`${index}-${letraIndex}`} className={highlightClasses} style={dynamicStyle} />;
   }
 
-  let colorClasses = "border-2 border-[#1e293b] text-white"; // borda padrão
+  let colorClasses = "bg-slate-700/30 text-slate-300 border border-slate-600/30 hover:bg-slate-600/40 hover:border-slate-500/50"; // borda padrão
 
   if (isFinalAttempt) {
     const tentativaSemAcento = removeAccents(tentativa);
@@ -53,11 +53,11 @@ const renderLetter = (
 
     const status = statusArray[letraIndex];
     if (status === "correct") {
-      colorClasses = "bg-[#22c55e80] border-2 border-[#22c55eb3] text-white";
+      colorClasses = "animate-flip bg-[#22c55e80] border-2 border-[#22c55eb3] text-white"
     } else if (status === "present") {
-      colorClasses = "bg-[#eab30880] border-2 border-[#eab30880] text-white";
+      colorClasses = "animate-flip bg-[#eab30880] border-2 border-[#eab30880] text-white";
     } else {
-      colorClasses = "bg-[#6b728080] border-2 border-[#9ca3afb3] text-white";
+      colorClasses = "animate-flip bg-[#6b728080] border-2 border-[#9ca3afb3] text-white";
     }
   }
 

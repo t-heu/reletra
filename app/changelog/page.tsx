@@ -150,7 +150,7 @@ export default function Changelog() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#020817] text-white p-4">
+    <main className="min-h-screen text-white p-4">
       <div className="max-w-3xl mx-auto py-8">
         <Link href="/">
           <button title="Voltar" className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">

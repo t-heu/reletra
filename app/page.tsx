@@ -378,11 +378,11 @@ export default function Page() {
           )}
 
           {/* Grid de letras */}
-          <div className="grid gap-1 sm:gap-1 mb-2 w-full place-items-center">
+          <div className="grid gap-2 sm:gap-2 mb-2 w-full place-items-center">
             {word.length === 0 ? (
               // Mostra skeleton enquanto `word` não está carregada
               Array.from({ length: limitAttempts }).map((_, rowIndex) => (
-                <div key={rowIndex} className="flex gap-1 sm:gap-1 justify-center animate-pulse">
+                <div key={rowIndex} className="flex gap-2 sm:gap-2 justify-center animate-pulse">
                   {Array.from({ length: 5 }).map((_, colIndex) => ( // usa 5 como placeholder
                     <div
                       key={`${rowIndex}-${colIndex}`}
@@ -398,7 +398,7 @@ export default function Page() {
             ) : (
               // Renderização normal quando a palavra existe
               Array.from({ length: limitAttempts }).map((_, index) => (
-                <div key={index} className="flex gap-1 sm:gap-1 justify-center">
+                <div key={index} className="flex gap-2 sm:gap-2 justify-center">
                   {Array.from({ length: word.length }).map((_, letraIndex) => {
                     if (attempts[index]) {
                       return renderLetter(attempts[index], index, letraIndex, word);
@@ -410,8 +410,8 @@ export default function Page() {
                       return (
                         <div
                           key={`${index}-${letraIndex}`}
-                          className={`font-playpen flex items-center justify-center font-bold transition-none text-white border-2 text-xl sm:text-2xl rounded-sm ${
-                            isActive ? "border-[#F57C00] animate-pulse" : "border-[#1e293b]"
+                          className={`font-playpen flex items-center justify-center font-bold transition-none text-black border-2 text-xl sm:text-2xl rounded-sm ${
+                            isActive ? "border-[#F57C00] animate-pulse" : "bg-[#fff1d3] border-2 border-[#fff1d3]"
                           }`}
                           style={{
                             width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
@@ -427,7 +427,7 @@ export default function Page() {
                     return (
                       <div
                         key={`${index}-${letraIndex}`}
-                        className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl rounded-sm"
+                        className="font-playpen flex items-center justify-center font-bold transition-none text-white bg-[#fff1d3] border-2 border-[#fff1d3] text-xl sm:text-2xl rounded-sm"
                         style={{
                           width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
                           height: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,

@@ -59,7 +59,7 @@ export default function challengeModal({ onClose }: DesafioModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-[#020817] w-full max-w-sm rounded-xl p-6 shadow-lg">
+      <div className="bg-[#1d2021] w-full max-w-sm rounded-xl p-6 shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-white">Desafiar um amigo</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-200">
@@ -79,7 +79,7 @@ export default function challengeModal({ onClose }: DesafioModalProps) {
             setIsValid(null)
           }}
           placeholder="Digite a palavra..."
-          className="w-full px-4 py-2 rounded-md bg-[#0f172a] text-white border border-[#334155] focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 rounded-md bg-[#222] text-white border border-[#334155] focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         {isValid === false && (

@@ -37,8 +37,8 @@ const palavrasDaSemana = Array.from({ length: 7 }, (_, i) => {
 
 export default function History() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0f172a] p-4">
-      <div className="bg-[#020817] w-full max-w-md rounded-xl p-6 shadow-lg">
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="bg-[#111] w-full max-w-md rounded-xl p-6 shadow-lg">
         <Link href="/">
           <button title="Voltar" className="flex w-full justify-center items-center text-white hover:text-black hover:bg-white rounded-md py-2">
             <ArrowLeft className="mr-2 h-4 w-4" />

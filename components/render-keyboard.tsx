@@ -32,20 +32,18 @@ export function Key({
   const isDelete = letra === "DELETE";
   const isEnter = letra === "ENTER";
 
-  let bgColor = "bg-[#777]";
-  let borderColor = "border border-[#777]";
+  let colorClasses = "bg-transparent border-2 border-[#64748b80]";
   let textColor = "text-[#eee]";
 
   if (correctLetters.has(letra)) {
-    bgColor = "bg-[#22c55e80] hover:bg-[#22c55e99]";
-    borderColor = "border-2 border-[#22c55eb3]";
+    colorClasses = "bg-[#22c55e80] border-2 border-[#22c55eb3]";
+    textColor = "text-[#eee]";
   } else if (existingLetters.has(letra)) {
-    bgColor = "bg-[#eab30880] hover:bg-[#eab30899]";
-    borderColor = "border-2 border-[#eab30880]";
+    colorClasses = "bg-[#eab30880] border-2 border-[#eab30880]";
+    textColor = "text-[#eee]";
   } else if (wrongLetters.has(letra)) {
-    bgColor = "bg-[#6b728080] hover:bg-[#6b728099]";
-    borderColor = "border-2 border-[#9ca3afb3]";
-    textColor = "text-white";
+    colorClasses = "bg-[#6b728080] border-2 border-[#9ca3afb3]";
+    textColor = "text-[#eee]";
   }
 
   const handleClick = () => {
@@ -67,13 +65,13 @@ export function Key({
   const baseClasses = `
     rounded font-bold active:scale-95 transition-all
     flex items-center justify-center
-    ${borderColor} ${textColor} ${bgColor}
+    ${colorClasses} ${textColor}
     disabled:opacity-50 disabled:cursor-not-allowed
   `;
 
   const sizeClasses = isSpecial
-    ? "w-[60px] sm:w-[65px] md:w-[70px]"
-    : "w-[43px] sm:w-[45px] md:w-[48px]";
+    ? "w-[65px] sm:w-[65px] md:w-[70px]"
+    : "w-[38px] sm:w-[45px] md:w-[48px]";
 
   return (
     <button
@@ -86,7 +84,9 @@ export function Key({
       {isDelete ? (
         <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
       ) : (
-        <span className="text-sm sm:text-base md:text-lg uppercase">
+        <span className="text-[1.22rem] uppercase" style={{
+          fontSize: `${isEnter && '1.1rem'}`
+        }}>
           {letra}
         </span>
       )}

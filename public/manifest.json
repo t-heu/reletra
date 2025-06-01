@@ -4,8 +4,8 @@
   "description": "Desafie-se a desletrar uma nova palavra a cada dia!",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#071122",
-  "theme_color": "#071122",
+  "background_color": "#1d2021",
+  "theme_color": "#1d2021",
   "orientation": "portrait",
   "icons": [
     {

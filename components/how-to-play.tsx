@@ -16,7 +16,7 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-[#020817] w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-white">
+      <div className="bg-[#121213] via-slate-800 to-slate-900 w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-white">
         <button
           className="absolute top-4 right-4 text-xl font-bold text-white hover:text-[#1e293b]"
           onClick={onClose}
@@ -94,7 +94,7 @@ function LetraBox({
   letra: string;
   status?: "correta" | "presente" | "ausente";
 }) {
-  let bg = "text-white border-2 border-[#1e293b] text-black";
+  let bg = "text-white border-2 border-[#64748b80] text-black";
   if (status === "correta") bg = "bg-[#22c55e80] border-2 border-[#22c55eb3] text-white";
   if (status === "presente") bg = "bg-[#eab30880] border-2 border-[#eab30880] text-white";
   if (status === "ausente") bg = "bg-[#6b728080] text-white border-2 border-[#9ca3afb3]";

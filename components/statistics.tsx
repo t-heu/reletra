@@ -49,7 +49,7 @@ export default function Statistics({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-[#020817] w-full max-w-md rounded-xl p-6 shadow-lg">
+      <div className="bg-[#121213] w-full max-w-md rounded-xl p-6 shadow-lg">
         <div className="flex justify-between items-start">
           <h2 className="text-2xl font-bold text-center w-full text-white">
             {ultimaVitoria ? (
@@ -109,7 +109,7 @@ export default function Statistics({
                             ? "bg-green-500 text-white"
                             : count > 0
                               ? "bg-white text-black"
-                              : "bg-[#0a1121] text-gray-400"
+                              : "bg-[#64748b80] text-gray-400"
                         }`}
                         style={{ width: `${Math.max(porcentagem, count > 0 ? 15 : 8)}%` }}
                       >
