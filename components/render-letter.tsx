@@ -10,7 +10,7 @@ const renderLetter = (
   const letra = tentativa[letraIndex];
 
   const highlightClasses =
-    "font-roboto flex items-center justify-center font-bold transition-none text-white rounded-md";
+    "font-roboto flex items-center justify-center font-bold transition-none text-white rounded-sm";
 
   const dynamicStyle = {
     width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,

@@ -12,6 +12,8 @@ import {
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 
+import ToggleMode from "../components/toggle-mode"
+
 type Props = {
   howToPlay: (v: boolean) => void
   restartGame: (len?: number) => void
@@ -20,6 +22,7 @@ type Props = {
   mode: "daily" | "free" | "challenge"
   setShowStatistics: any
   setShowCreateChallenge: any
+  setMode: any
 }
 
 export default function Header({
@@ -29,7 +32,8 @@ export default function Header({
   setShowStatistics,
   wordLength,
   setWordLength,
-  setShowCreateChallenge
+  setShowCreateChallenge,
+  setMode
 }: Props) {
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -47,7 +51,7 @@ export default function Header({
   }, [])
 
   return (
-    <header className="w-full flex justify-around items-center mt-3 mb-2">
+    <header className="w-full flex flex-col justify-around items-center mt-3 mb-2">
       <div className="w-full max-w-[500px] flex justify-between items-center px-2">
         {/* Botão de ajuda */}
         <div>
@@ -150,6 +154,10 @@ export default function Header({
             </div>
           )}
         </div>
+      </div>
+
+      <div className="flex gap-2 justify-center mb-2 mt-4">
+        <ToggleMode mode={mode} setMode={setMode} />
       </div>
     </header>
   )

@@ -16,7 +16,6 @@ import validWords from "../validWords.json";
 
 import ButtonComp from "../components/button"
 import {renderKeyboard} from "../components/render-keyboard"
-import ToggleMode from "../components/toggle-mode"
 import renderLetter from "../components/render-letter"
 import HowToPlay from "../components/how-to-play"
 import Header from "../components/header"
@@ -148,7 +147,6 @@ export default function Page() {
           wrong: new Set(),
           exists: new Set(),
         }));
-        setShowAlert(null)
       }
 
       setWord(generateDailyWord());
@@ -164,7 +162,6 @@ export default function Page() {
         wrong: new Set(),
         exists: new Set(),
       }));
-      setShowAlert(null)
     }
   }, [mode]);
 
@@ -179,6 +176,9 @@ export default function Page() {
     // 🛑 Bloqueia se palavra não estiver na lista
     if (checkWords(palpiteNormalizado)) {
       setShowAlert('Palavra não reconhecida');
+      setTimeout(() => {
+        setShowAlert(null); // ou '' dependendo de como você esconde o alerta
+      }, 3000); // 3 segundos
       return;
     }
 
@@ -199,7 +199,6 @@ export default function Page() {
 
     const novasTentativas = [...attempts, palavraFinal];
     setAttempts(novasTentativas);
-    setShowAlert(null)
 
     if (acertou) {
       setIsCorrect(true);
@@ -302,12 +301,12 @@ export default function Page() {
     5: "DEU CERTO!",
     6: "QUASE!",
   };
-
+  
   const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
   
   return (
     <main className="h-screen flex flex-col justify-between">
-      <Header wordLength={wordLength} setShowCreateChallenge={setShowCreateChallenge} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} />
+      <Header wordLength={wordLength} setShowCreateChallenge={setShowCreateChallenge} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} setMode={setMode} />
 
       <div className="flex-1 min-h-0 overflow-y-auto container mx-auto px-2 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
@@ -328,13 +327,9 @@ export default function Page() {
         )}
 
         <div className="w-full max-w-[600px]">
-          <div className="flex gap-2 justify-center mb-4 mt-2">
-            <ToggleMode mode={mode} setMode={setMode} />
-          </div>
-
           {/* Alert de jogo */}
           {showAlert && (
-            <div className="flex w-full justify-center relative">
+            <div className="flex w-full justify-center absolute left-0 right-0">
               <div className="font-sans bg-red-500/20 text-red-500 flex items-center gap-2 px-4 py-2 rounded-md animate-bounce">
                 <AlertCircle className="h-4 w-4" />
                 <span>{showAlert}</span>
@@ -344,19 +339,18 @@ export default function Page() {
 
           {/* Alert de acerto */}
           {(isCorrect || isLose) && (
-            <div className="flex justify-center relative mb-2">
+            <div className="flex justify-center absolute top-[20rem] left-0 right-0">
               <div
-                className={`font-semibold p-2 rounded-lg border-2 text-center ${
+                className={`p-2 rounded-sm border-2 text-center ${
                   isCorrect
                     ? "bg-[#22c55e80] border-[#22c55eb3] text-white"
-                    : "bg-[#eee] border-[#aaa] text-black"
+                    : "bg-[#eee] border-[#eee] text-black"
                 }`}
               >
                 {isCorrect ? (
                   <>
-                    <h3 className="text-xl mb-1">{getFeedback(attempts.length)}</h3>
                     <p className="text-sm">
-                      Você acertou a palavra {mode === "daily" ? "do dia" : ""} em {attempts.length} tentativa
+                      <strong>{getFeedback(attempts.length)}</strong> Você acertou a palavra {mode === "daily" ? "do dia" : ""} em {attempts.length} tentativa
                       {attempts.length > 1 ? "s" : ""}!
                     </p>
                   </>
@@ -384,7 +378,7 @@ export default function Page() {
           )}
 
           {/* Grid de letras */}
-          <div className="grid gap-1 sm:gap-1 mb-4 w-full place-items-center">
+          <div className="grid gap-1 sm:gap-1 mb-2 w-full place-items-center">
             {word.length === 0 ? (
               // Mostra skeleton enquanto `word` não está carregada
               Array.from({ length: limitAttempts }).map((_, rowIndex) => (
@@ -392,7 +386,7 @@ export default function Page() {
                   {Array.from({ length: 5 }).map((_, colIndex) => ( // usa 5 como placeholder
                     <div
                       key={`${rowIndex}-${colIndex}`}
-                      className="bg-slate-700 border-2 border-slate-600 rounded-md"
+                      className="bg-slate-700 border-2 border-slate-600 rounded-sm"
                       style={{
                         width: `clamp(45px, 16vw, 72px)`,
                         height: `clamp(45px, 16vw, 72px)`,
@@ -416,7 +410,7 @@ export default function Page() {
                       return (
                         <div
                           key={`${index}-${letraIndex}`}
-                          className={`font-playpen flex items-center justify-center font-bold transition-none text-white border-2 text-xl sm:text-2xl rounded-md ${
+                          className={`font-playpen flex items-center justify-center font-bold transition-none text-white border-2 text-xl sm:text-2xl rounded-sm ${
                             isActive ? "border-[#F57C00] animate-pulse" : "border-[#1e293b]"
                           }`}
                           style={{
@@ -433,7 +427,7 @@ export default function Page() {
                     return (
                       <div
                         key={`${index}-${letraIndex}`}
-                        className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl rounded-md"
+                        className="font-playpen flex items-center justify-center font-bold transition-none text-white border-2 border-[#1e293b] text-xl sm:text-2xl rounded-sm"
                         style={{
                           width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
                           height: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
