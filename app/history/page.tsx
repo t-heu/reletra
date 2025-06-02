@@ -5,35 +5,37 @@ import { CalendarDays, ArrowLeft } from "lucide-react"
 
 import {getYesterdayWord} from "../../utils/generate-words"
 
-const diasDaSemana = [
-  "Domingo",
-  "Segunda-feira",
-  "Terça-feira",
-  "Quarta-feira",
-  "Quinta-feira",
-  "Sexta-feira",
-  "Sábado",
-];
-
-const palavrasDaSemana = Array.from({ length: 7 }, (_, i) => {
+function palavrasDaSemana() {
+  const diasDaSemana = [
+    "Domingo",
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+  ];
   const hoje = new Date();
-  const diaDaSemanaAtual = hoje.getDay(); // 0 (domingo) até 6 (sábado)
-
-  // Calcula quantos dias atrás foi o início da semana
-  // Ex: se hoje é terça (2), começamos pegando domingo (2 dias atrás)
-  // se hoje é domingo (0), pegamos o domingo da semana anterior (7 dias atrás)
-  const diasAtras = (diaDaSemanaAtual + 7 - i) % 7 + (i === 0 && diaDaSemanaAtual === 0 ? 7 : 0);
-
-  const data = new Date();
-  data.setDate(hoje.getDate() - diasAtras);
-
-  const nomeDia = diasDaSemana[data.getDay()];
-
-  return {
-    dia: nomeDia,
-    palavra: getYesterdayWord(diasAtras),
-  };
-});
+  
+  const palavrasTemp: { dia: string;palavra: string } [] = [];
+  
+  for (let i = 1; i <= 7; i++) {
+    const data = new Date();
+    data.setDate(hoje.getDate() - i);
+    
+    const nomeDia = diasDaSemana[data.getDay()];
+    const palavra = getYesterdayWord(i); // usa dias atrás, como no seu código
+    
+    palavrasTemp.push({ dia: nomeDia, palavra });
+  }
+  
+  // Ordenar os dias na ordem fixa da semana
+  const palavrasOrdenadas = diasDaSemana.map((dia) =>
+    palavrasTemp.find((p) => p.dia === dia) || { dia, palavra: "" }
+  );
+  
+  return palavrasOrdenadas;
+}
 
 export default function History() {
   return (
@@ -54,7 +56,7 @@ export default function History() {
         </div>
 
         <ul className="divide-y divide-[#1e293b]">
-          {palavrasDaSemana.map(({ dia, palavra }) => (
+          {palavrasDaSemana().map(({ dia, palavra }) => (
             <li key={dia} className="py-3 flex justify-between items-center">
               <span className="text-white">{dia}</span>
               <span className="text-sm text-gray-400 font-mono bg-[#1e293b] px-2 py-1 rounded">
