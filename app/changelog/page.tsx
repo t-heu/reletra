@@ -16,7 +16,7 @@ interface CardProps {
 function Card({ children, className = '' }: CardProps) {
   return (
     <div
-      className={`bg-[#0a1121] border border-[#1e293b] rounded-md p-6 shadow-sm ${className}`}
+      className={`bg-[#121212] border border-[#1e293b] rounded-md p-6 shadow-sm ${className}`}
     >
       {children}
     </div>
@@ -98,6 +98,7 @@ export default function Changelog() {
         { type: "new", text: "Adicionado Modo Desafio para enviar palavras a amigos" },
         { type: "new", text: "Campo de link com botão de copiar para compartilhar desafios" },
         { type: "new", text: "Histórico de temas de 1 semana." },
+        { type: "new", text: "Adicionado modo Hard e Easy" },
         { type: "improvement", text: "Texto de instruções atualizado com o novo modo" },
       ],
     },

@@ -9,7 +9,8 @@ import {
   CirclePlus,
   CircleAlert,
   Milestone,
-  History 
+  History,
+  X
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 
@@ -24,6 +25,8 @@ type Props = {
   setShowStatistics: any
   setShowCreateChallenge: any
   setMode: any
+  difficulty: any
+  setDifficulty: any
 }
 
 export default function Header({
@@ -34,7 +37,9 @@ export default function Header({
   wordLength,
   setWordLength,
   setShowCreateChallenge,
-  setMode
+  setMode,
+  difficulty,
+  setDifficulty
 }: Props) {
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -62,7 +67,24 @@ export default function Header({
         <div className="w-full max-w-[500px] flex justify-around items-center px-2">
           {/* Botão 1 */}
           <div>
-            <ToggleMode mode={mode} setMode={setMode} />
+            {mode === "challenge" ? (
+              <Link href="/">
+                <button onClick={() => setMode('daily')} className="flex items-center text-[#eee] text-sm font-medium hover:text-black hover:bg-white rounded-md px-4 py-2">
+                  <X className="mr-2 h-4 w-4" />
+                  Sair do Desafio
+                </button>
+              </Link>
+            ): (
+              <ToggleMode
+                value={mode}
+                onChange={setMode}
+                logKey="mode_switched"
+                options={[
+                  { value: "daily", label: "Diário" },
+                  { value: "free", label: "Livre" }
+                ]}
+              />
+            )}
           </div>
 
           {/* Botão 2 */}
@@ -98,32 +120,44 @@ export default function Header({
 
             {openDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-[#121213] border border-[#1e293b] dark:border-gray-700 rounded shadow-md z-50">
-                <>
-                  <Link href="/changelog">
-                    <button 
-                      title="Changelog"
-                      className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
-                      <Milestone className="h-5 w-5" />
-                      Changelog
-                    </button>
-                  </Link>
-                  <Link href="/about">
-                    <button 
-                      title="Sobre"
-                      className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
-                      <CircleAlert className="h-5 w-5" />
-                      Sobre
-                    </button>
-                  </Link>
-                  <Link href="/history ">
-                    <button 
-                      title="Histórico"
-                      className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
-                      <History className="h-5 w-5" />
-                      Histórico
-                    </button>
-                  </Link>
-                  {mode === 'free' && (
+                <Link href="/changelog">
+                  <button 
+                    title="Changelog"
+                    className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                    <Milestone className="h-5 w-5" />
+                    Changelog
+                  </button>
+                </Link>
+                <Link href="/about">
+                  <button 
+                    title="Sobre"
+                    className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                    <CircleAlert className="h-5 w-5" />
+                    Sobre
+                  </button>
+                </Link>
+                <Link href="/history ">
+                  <button 
+                    title="Histórico"
+                    className="w-full text-sm text-left px-4 py-2 hover:bg-[#1e293b] dark:hover:bg-gray-700 flex items-center gap-2 text-white">
+                    <History className="h-5 w-5" />
+                    Histórico
+                  </button>
+                </Link>
+                <div className="my-4">
+                  <ToggleMode
+                    value={difficulty}
+                    onChange={setDifficulty}
+                    logKey="mode_switched"
+                    options={[
+                      { value: "easy", label: "Fácil" },
+                      { value: "hard", label: "Difícil" }
+                    ]}
+                  />
+                  <span className="px-4 pt-2 block text-sm text-[#ccc]">Selecione o nível de dificuldade desejado</span>
+                </div>
+                {mode === 'free' && (
+                  <>
                     <button 
                       title="Resetar tema"
                       onClick={() => restartGame()}
@@ -131,11 +165,7 @@ export default function Header({
                       <RotateCcw className="h-5 w-5" />
                       Resetar tema
                     </button>
-                  )}
-                </>
-                {mode === 'free' && (
-                  <>
-                    <span className="flex p-4 py-2 text-xm text-[#eee]">Nível de dificuldade:</span>
+                    <span className="flex p-4 py-2 text-sm text-[#ccc]">Nível de dificuldade em letras:</span>
                     <button
                       onClick={() => {
                         setWordLength(null)

@@ -15,8 +15,8 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-[#121213] via-slate-800 to-slate-900 w-[90%] max-w-md rounded-lg shadow-lg p-6 relative text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+      <div className="bg-[#1d2021] max-w-md w-full max-h-screen overflow-y-auto rounded-lg shadow-lg p-6 relative text-white">
         <button
           className="absolute top-4 right-4 text-xl font-bold text-white hover:text-[#1e293b]"
           onClick={onClose}
@@ -38,6 +38,11 @@ export default function ComoJogarModal({ onClose }: { onClose: () => void }) {
               <li><strong>Modo Desafio:</strong> envie uma palavra para um amigo tentar adivinhar.</li>
             </ul>
           </li>
+          <li>Você pode escolher entre dois níveis de dificuldade:</li>
+          <ul className="list-disc pl-5">
+            <li><strong>Fácil:</strong> palavras mais curtas e comuns.</li>
+            <li><strong>Difícil:</strong> palavras mais longas ou incomuns.</li>
+          </ul>
           <li>
             A cor das peças mudará para mostrar o quão próximo seu palpite
             estava da palavra.

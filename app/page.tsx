@@ -9,10 +9,8 @@ import { logEvent } from "firebase/analytics";
 import { removeAccents } from "../utils/remove-accents"
 import {decodeWord} from "../utils/generate-challenge"
 import {generateDailyWord, generateRandomWord, getYesterdayWord} from "../utils/generate-words"
-import {checkWords} from "../utils/check-words"
+import {checkWords, wordWithAccent} from "../utils/check-words"
 import {saveGameState, updateStatistics, getGameState} from "../utils/localStorage-utils"
-
-import validWords from "../validWords.json";
 
 import ButtonComp from "../components/button"
 import {renderKeyboard} from "../components/render-keyboard"
@@ -35,6 +33,7 @@ export default function Page() {
     exists: new Set<string>(),
   });
   const [mode, setMode] = useState<"daily" | "free" | "challenge">("daily");
+  const [difficulty, setDifficulty] = useState<"easy" | "hard">("easy");
   const [statistics, setStatistics] = useState({
     played: 0,
     wins: 0,
@@ -50,7 +49,6 @@ export default function Page() {
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
-  const wordList = (validWords as {words: string[]}).words;
   const tentativas = attempts.length
 
   // Carregar estatísticas do localStorage
@@ -101,8 +99,20 @@ export default function Page() {
       return;
     }
 
+    const resetState = () => {
+      setAttempts([]);
+      setIsCorrect(false);
+      setIsLose(false);
+      setLettersState(prev => ({
+        ...prev,
+        correct: new Set(),
+        wrong: new Set(),
+        exists: new Set(),
+      }));
+    };
+
     if (mode === "daily") {
-      const stored = getGameState()
+      const stored = getGameState(); // Você pode adaptar isso por dificuldade depois se quiser
       const {
         ultimoJogo,
         attempts: savedAttempts = [],
@@ -113,8 +123,7 @@ export default function Page() {
           wrong = [],
           exists = []
         } = {}
-      } = stored ? stored : {};
-      console.log(ultimoJogo, today)
+      } = stored || {};
 
       if (endGame && !savedCorrect) setIsLose(true);
       if (!ultimoJogo) setShowHowToPlay(true);
@@ -138,34 +147,17 @@ export default function Page() {
           letterHints: { correct: [], wrong: [], exists: [] }
         };
 
-        saveGameState(reset );
-
-        setAttempts([]);
-        setIsCorrect(false);
-        setIsLose(false);
-        setLettersState(prev => ({
-          ...prev,
-          correct: new Set(),
-          wrong: new Set(),
-          exists: new Set(),
-        }));
+        saveGameState(reset);
+        resetState();
       }
 
-      setWord(generateDailyWord());
+      setWord(generateDailyWord(difficulty));
     } else {
-      const newWord = mode === "free" ? generateRandomWord() : "";
+      const newWord = mode === "free" ? generateRandomWord(difficulty) : "";
       setWord(newWord);
-      setAttempts([]);
-      setIsCorrect(false);
-      setIsLose(false);
-      setLettersState(prev => ({
-        ...prev,
-        correct: new Set(),
-        wrong: new Set(),
-        exists: new Set(),
-      }));
+      resetState();
     }
-  }, [mode]);
+  }, [mode, difficulty]);
 
   // Verifica o palpite do jogador
   const checkGuess = () => {
@@ -192,9 +184,7 @@ export default function Page() {
     const acertou = palpiteNormalizado === palavraNormalizada;
 
     // Recupera a palavra original com acento da wordList
-    const palavraComAcento = wordList.find(
-      w => removeAccents(w.toUpperCase()) === palpiteNormalizado
-    );
+    const palavraComAcento = wordWithAccent(palpiteNormalizado);
 
     // Usa a palavra com acento (ou o próprio palpite original, se não achar)
     const palavraFinal = acertou ? word : palavraComAcento?.toUpperCase() || palpiteOriginal;
@@ -282,7 +272,7 @@ export default function Page() {
     }));
 
     if (mode === 'free' || mode === 'challenge') {
-      const novaPalavra = generateRandomWord(len)
+      const novaPalavra = generateRandomWord(difficulty, len)
       setWord(novaPalavra);
 
       getAnalyticsIfSupported().then((analytics) => {
@@ -308,7 +298,18 @@ export default function Page() {
   
   return (
     <main className="h-screen flex flex-col justify-between">
-      <Header wordLength={wordLength} setShowCreateChallenge={setShowCreateChallenge} setWordLength={setWordLength} setShowStatistics={setShowStatistics} howToPlay={setShowHowToPlay} restartGame={restartGame} mode={mode} setMode={setMode} />
+      <Header 
+        wordLength={wordLength} 
+        setShowCreateChallenge={setShowCreateChallenge} 
+        setWordLength={setWordLength} 
+        setShowStatistics={setShowStatistics} 
+        howToPlay={setShowHowToPlay} 
+        restartGame={restartGame} 
+        mode={mode} 
+        setMode={setMode}
+        difficulty={difficulty}
+        setDifficulty={setDifficulty}
+      />
 
       <div className="flex-1 min-h-0 overflow-y-auto container mx-auto px-2 flex justify-center">
         {showHowToPlay && <HowToPlay onClose={() => setShowHowToPlay(false)} />}
@@ -370,7 +371,7 @@ export default function Page() {
                     )}
                     {mode === "daily" && (
                       <p className="font-sans">
-                        Ontem era: <strong>{getYesterdayWord()}</strong>
+                        Ontem era: <strong>{getYesterdayWord(difficulty)}</strong>
                       </p>
                     )}
                   </>

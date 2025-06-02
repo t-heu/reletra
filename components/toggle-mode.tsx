@@ -1,8 +1,6 @@
 "use client"
 
 import { HTMLAttributes } from "react"
-import Link from "next/link"
-import { X } from "lucide-react"
 
 import { getAnalyticsIfSupported } from "../api/firebase";
 import { logEvent } from "firebase/analytics";
@@ -36,48 +34,46 @@ export function Switch({ checked, onCheckedChange, id, ...props }: SwitchProps) 
   )
 }
 
-type Props = {
-  mode: "daily" | "free" |  "challenge"
-  setMode: (mode: "daily" | "free" | "challenge") => void
+type ToggleOption = {
+  value: string
+  label: string
 }
 
-export default function ToggleMode({ mode, setMode }: Props) {
-  const modeFree = mode === "free"
+type ToggleProps = {
+  value: string
+  onChange: (newValue: string) => void
+  options: [ToggleOption, ToggleOption]
+  logKey?: string // ex: 'mode_switched'
+}
 
-  function alternarModo(checked: boolean) {
-    const newMode = checked ? "free" : "daily"
+export default function Toggle({ value, onChange, options, logKey }: ToggleProps) {
+  const [optionA, optionB] = options
+  const isOptionB = value === optionB.value
 
-    setMode(newMode)
+  function handleToggle(checked: boolean) {
+    const newValue = checked ? optionB.value : optionA.value
+    onChange(newValue)
 
-    getAnalyticsIfSupported().then((analytics) => {
-      if (analytics) {
-        logEvent(analytics, "mode_switched", {
-          new_mode: newMode,
-        })
-      }
-    })
+    if (logKey) {
+      getAnalyticsIfSupported().then((analytics) => {
+        if (analytics) {
+          logEvent(analytics, logKey, {
+            new_value: newValue,
+          })
+        }
+      })
+    }
   }
 
   return (
     <div className="flex items-center justify-center gap-2">
-      {mode === "challenge" ? (
-        <Link href="/">
-          <button onClick={() => setMode('daily')} className="flex items-center text-[#eee] text-sm font-medium hover:text-black hover:bg-white rounded-md px-4 py-2">
-            <X className="mr-2 h-4 w-4" />
-            Sair do Desafio
-          </button>
-        </Link>
-      ): (
-        <>
-          <span className={`text-sm font-medium ${!modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
-            Diário
-          </span>
-          <Switch checked={modeFree} onCheckedChange={alternarModo} id="modo-jogo" />
-          <span className={`text-sm font-medium ${modeFree ? "text-[#eee]" : "text-[#94a3b8]"}`}>
-            Livre
-          </span>
-        </>
-      )}
+      <span className={`text-sm font-medium ${!isOptionB ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+        {optionA.label}
+      </span>
+      <Switch checked={isOptionB} onCheckedChange={handleToggle} id="generic-toggle" />
+      <span className={`text-sm font-medium ${isOptionB ? "text-[#eee]" : "text-[#94a3b8]"}`}>
+        {optionB.label}
+      </span>
     </div>
   )
 }

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function About() {
   return (
     <main className="min-h-screen inset-0 flex items-center justify-center z-50">
-      <div className="bg-[#020817] text-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
+      <div className="bg-[#121212] text-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
         <Link href="/">
           <button title="Voltar" className="flex items-center text-white hover:text-black hover:bg-white rounded-md px-4 py-2">
             <ArrowLeft className="mr-2 h-4 w-4" />
