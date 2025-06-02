@@ -114,6 +114,7 @@ export default function Page() {
           exists = []
         } = {}
       } = stored ? stored : {};
+      console.log(ultimoJogo, today)
 
       if (endGame && !savedCorrect) setIsLose(true);
       if (!ultimoJogo) setShowHowToPlay(true);
@@ -137,7 +138,8 @@ export default function Page() {
           letterHints: { correct: [], wrong: [], exists: [] }
         };
 
-        saveGameState({ reset });
+        saveGameState(reset );
+
         setAttempts([]);
         setIsCorrect(false);
         setIsLose(false);
