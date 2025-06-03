@@ -8,7 +8,7 @@ const renderLetter = (
   isFinalAttempt: boolean = true
 ) => {
   const letra = tentativa[letraIndex];
-
+  
   const highlightClasses =
     "font-bold flex items-center justify-center font-space transition-none text-white rounded-sm";
 
@@ -61,13 +61,11 @@ const renderLetter = (
     }
   }
 
-  const animationClass = letra ? "animate-spinOnce" : "";
-
   return (
     <div
       key={`${index}-${letraIndex}`}
       style={dynamicStyle}
-      className={`${highlightClasses} ${colorClasses} ${animationClass}`}
+      className={`${highlightClasses} ${colorClasses}`}
     >
       {letra}
     </div>

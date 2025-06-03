@@ -32,7 +32,7 @@ export const generateDailyWord = (difficulty: string): string => {
   const source = getSourceByDifficulty(difficulty);
   const words = getWordsOfLength(length, source);
 
-  return words[dayOfYear % words.length];
+  return (words[dayOfYear % words.length]).toUpperCase();
 };
 
 // Palavra aleatória de 3 a 6 letras
@@ -44,11 +44,11 @@ export const generateRandomWord = (difficulty: string, length?: number): string 
     words = getWordsOfLength(length, source);
   } else {
     const allValid = getWordsOfValidLength(source);
-    return allValid[Math.floor(Math.random() * allValid.length)];
+    return (allValid[Math.floor(Math.random() * allValid.length)]).toUpperCase();
   }
 
   if (words.length === 0) throw new Error(`Sem palavras de tamanho ${length}`);
-  return words[Math.floor(Math.random() * words.length)];
+  return (words[Math.floor(Math.random() * words.length)]).toUpperCase();
 };
 
 const getDayOfYear = (date: Date): number => {
@@ -68,5 +68,5 @@ export const getYesterdayWord = (difficulty: string, daysAgo: number = 1): strin
   const source = getSourceByDifficulty(difficulty);
   const words = getWordsOfLength(length, source);
 
-  return words[dayOfYear % words.length];
+  return (words[dayOfYear % words.length]).toUpperCase();
 };
