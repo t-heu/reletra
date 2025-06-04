@@ -60,8 +60,8 @@ export default function Header({
     <header className="w-full flex flex-col justify-around items-center mt-4 mb-4">
       <div className="w-full max-w-[600px] flex flex-row justify-between items-center px-2 [@media(max-width:500px)]:flex-col">
         {/* Título central */}
-        <h1 className="text-3xl font-bold text-center font-space text-white">
-          Desletra
+        <h1 className="text-3xl font-bold text-center font-montserrat text-white">
+          RELETRA
         </h1>
 
         <div className="w-full max-w-[500px] flex justify-around items-center px-2">

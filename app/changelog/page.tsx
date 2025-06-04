@@ -5,8 +5,8 @@ import { Metadata } from 'next'
 import { ArrowLeft } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: 'Changelog - Desletra',
-  description: 'Changelog do Desletra.',
+  title: 'Changelog - Reletra',
+  description: 'Changelog do Reletra.',
 }
 
 interface CardProps {

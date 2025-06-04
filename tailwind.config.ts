@@ -11,9 +11,8 @@ const config: Config = {
   theme: {
   	extend: {
 			fontFamily: {
-				code: ['Source Code Pro', 'monospace'],
 				roboto: ['Roboto', 'sans-serif'],
-				space: ["Space Grotesk", 'sans-serif']
+				montserrat: ["Montserrat", 'sans-serif']
     	},
   		colors: {
   			background: 'hsl(var(--background))',

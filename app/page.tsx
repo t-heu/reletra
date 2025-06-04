@@ -53,7 +53,7 @@ export default function Page() {
 
   // Carregar estatísticas do localStorage
   useEffect(() => {
-    const estatisticasSalvas = localStorage.getItem("desletra-statistics")
+    const estatisticasSalvas = localStorage.getItem("reletra-statistics")
     if (estatisticasSalvas) setStatistics(JSON.parse(estatisticasSalvas))
   }, [])
 

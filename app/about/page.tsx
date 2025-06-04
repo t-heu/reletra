@@ -4,8 +4,8 @@ import { Metadata } from 'next'
 import { ArrowLeft, X } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: 'Sobre - Desletra',
-  description: 'Saiba mais sobre o projeto Desletra.',
+  title: 'Sobre - Reletra',
+  description: 'Saiba mais sobre o projeto Reletra.',
 }
 
 export default function About() {
@@ -19,9 +19,9 @@ export default function About() {
           </button>
         </Link>
 
-        <h1 className="text-2xl font-bold mb-4 text-center">Sobre o Desletra</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Sobre o Reletra</h1>
         <p className="mb-3">
-          <strong>Desletra</strong> é um jogo de palavras inspirado em desafios como Wordle,
+          <strong>Reletra</strong> é um jogo de palavras inspirado em desafios como Wordle,
           mas com uma proposta única: desvendar a palavra oculta usando lógica e tentativas
           limitadas. Cada palpite revela dicas sobre quais letras estão corretas e em qual posição.
           O jogo utiliza um vocabulário vasto e refinado, semelhante ao de um dicionário, e permite,
@@ -35,7 +35,7 @@ export default function About() {
 
         <h3 className="text-lg font-semibold mt-6 mb-2 text-white">Privacidade</h3>
         <p className="text-sm text-gray-400 mb-4">
-          O Desletra respeita sua privacidade. Alguns dados anônimos são coletados para fins estatísticos e o jogo pode exibir anúncios durante o uso. Nenhuma informação pessoal ou confidencial é coletada, armazenada ou compartilhada.
+          O Reletra respeita sua privacidade. Alguns dados anônimos são coletados para fins estatísticos e o jogo pode exibir anúncios durante o uso. Nenhuma informação pessoal ou confidencial é coletada, armazenada ou compartilhada.
         </p>
         <p className="mb-3">
           Desenvolvido com 💙 por um entusiasta de jogos web e desenvolvimento de software.
@@ -52,7 +52,7 @@ export default function About() {
           </a>
         </p>
         <p className="text-sm text-gray-400 text-center mt-4">
-          © {new Date().getFullYear()} Desletra
+          © {new Date().getFullYear()} Reletra
         </p>
       </div>
     </main>

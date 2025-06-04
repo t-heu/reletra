@@ -22,7 +22,31 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ![Logo](docs/logo.png "logo")
 
-Palavras Cruzadas Codificadas é um desafio diário de lógica onde você precisa decifrar um código secreto para revelar as palavras cruzadas corretas. A cada dia, um novo tema é revelado (como “Frutas”), e as letras embaralhadas precisam ser trocadas até que todas as palavras façam sentido. Use dicas, raciocínio e estratégia para completar o tabuleiro!
+Reletra é um jogo de adivinhação de palavras inspirado no clássico Wordle, mas com novas possibilidades.
+As palavras variam de 3 a 6 letras (ou mais!) e você escolhe como quer jogar.
+
+🧩 Três modos de jogo:
+
+- Modo Diário: uma palavra nova por dia, igual para todos os jogadores.
+- Modo Livre: jogue quantas vezes quiser com palavras aleatórias.
+- Modo Desafio: crie uma palavra e envie para um amigo tentar adivinhar.
+
+🎯 Dois níveis de dificuldade:
+
+- Fácil: palavras mais curtas e comuns.
+- Difícil: palavras mais longas ou incomuns.
+
+🔡 Use lógica, intuição e vocabulário para descobrir a palavra secreta com o menor número de tentativas.
+Errou? Reletra.
+
+Reletra é um jogo simples e viciante onde seu desafio é descobrir a palavra certa, letra por letra.
+Use lógica, memória e um pouco de sorte para acertar antes que as tentativas acabem!
+
+🔡 Errou? Tente de novo.
+🔤 Acertou? Reletra outra!
+
+Com partidas rápidas e estimulantes, Reletra é perfeito para jogar no intervalo, na fila ou antes de dormir.
+Um passatempo inteligente para quem ama palavras.
 
 ## 🖼️ Preview
 ![Screen 1](docs/preview.png "Screen 1")

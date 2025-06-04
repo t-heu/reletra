@@ -1,7 +1,7 @@
 {
-  "name": "Desletra",
-  "short_name": "Desletra",
-  "description": "Desafie-se a desletrar uma nova palavra a cada dia!",
+  "name": "Reletra",
+  "short_name": "Reletra",
+  "description": "Reletra: adivinhe, tente, descubra.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#1d2021",

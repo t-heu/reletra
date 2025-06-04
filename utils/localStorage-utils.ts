@@ -6,7 +6,7 @@ type GameStatistics = {
   distribution: number[]
 }
 
-const STATS_KEY = "desletra-statistics"
+const STATS_KEY = "reletra-statistics"
 const GAME_KEY = "gameStored"
 
 export function getStatistics(): GameStatistics | null {
