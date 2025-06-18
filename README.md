@@ -25,6 +25,20 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Reletra é um jogo de adivinhação de palavras inspirado no clássico Wordle, mas com novas possibilidades.
 As palavras variam de 3 a 6 letras (ou mais!) e você escolhe como quer jogar.
 
+## Curiosidade: O que significa "Reletra"?
+
+É uma junção (ou neologismo) que sugere a ação de:
+
+Re- = fazer de novo.
+Letra = elemento central do jogo.
+
+Assim, "Reletra" sugere:
+"Reformular, repensar, reorganizar ou tentar novamente uma palavra, letra por letra."
+
+Evoca a mecânica do jogo:
+
+Tente várias vezes montar a palavra certa, letra por letra. Exatamente isso: "re-letrar".
+
 🧩 Três modos de jogo:
 
 - Modo Diário: uma palavra nova por dia, igual para todos os jogadores.
