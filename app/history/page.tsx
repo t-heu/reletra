@@ -7,20 +7,19 @@ import {getYesterdayWord} from "../../utils/generate-words"
 
 function palavrasDaSemana() {
   const diasDaSemana = [
-    "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado",
+    'Domingo',
+    'Segunda-feira',
+    'Terça-feira',
+    'Quarta-feira',
+    'Quinta-feira',
+    'Sexta-feira',
+    'Sábado',
   ];
 
   const hoje = new Date();
   const resultado: {
     dia: string;
     easy: string;
-    hard: string;
   }[] = [];
 
   for (let i = 1; i <= 7; i++) {
@@ -28,16 +27,14 @@ function palavrasDaSemana() {
     data.setDate(hoje.getDate() - i);
     const diaNome = diasDaSemana[data.getDay()];
 
-    const easy = getYesterdayWord("easy", i);
-    const hard = getYesterdayWord("hard", i);
+    const easy = getYesterdayWord(i);
 
-    resultado.push({ dia: diaNome, easy, hard });
+    resultado.push({ dia: diaNome, easy });
   }
 
-  // Ordenar os dias na ordem da semana fixa
   return diasDaSemana.map((dia) => {
     const encontrado = resultado.find((d) => d.dia === dia);
-    return encontrado || { dia, easy: "", hard: "" };
+    return encontrado || { dia, easy: '' };
   });
 }
 
@@ -57,9 +54,9 @@ export default function History() {
           </button>
         </Link>
 
-        <div className="flex justify-between items-center mt-2 mb-6">
+        <div className="flex justify-center items-center mt-2 mb-6">
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <CalendarDays className="h-6 w-6 text-blue-400" />
+            <CalendarDays className="h-6 w-6 text-[#008080]" />
             Histórico da Semana
           </h1>
         </div>
@@ -67,18 +64,16 @@ export default function History() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-400">
             <thead>
-              <tr className="text-white border-b border-[#1e293b] text-center">
+              <tr className="text-white border-b border-[#008080] text-center">
                 <th className="py-2">Dia</th>
-                <th className="py-2">Fácil</th>
-                <th className="py-2">Difícil</th>
+                <th className="py-2">Palavra</th>
               </tr>
             </thead>
             <tbody>
-              {historico.map(({ dia, easy, hard }) => (
-                <tr key={dia} className="border-b border-[#1e293b]">
+              {historico.map(({ dia, easy }) => (
+                <tr key={dia} className="border-b border-[#008080]">
                   <td className="py-2">{dia}</td>
-                  <td className="py-2 font-mono bg-[#1e293b] px-2 text-center">{easy}</td>
-                  <td className="py-2 font-mono bg-[#1e293b] px-2 text-center">{hard}</td>
+                  <td className="py-2 font-mono bg-[#008080] text-white px-2 text-center">{easy}</td>
                 </tr>
               ))}
             </tbody>

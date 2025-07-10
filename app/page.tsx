@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { AlertCircle } from "lucide-react";
 
 import { getAnalyticsIfSupported } from "../api/firebase";
@@ -21,17 +21,25 @@ import Statistics from "../components/statistics"
 import AdBanner from "../components/ad-banner"
 import ChallengeModal from "../components/challenge-modal"
 
+interface LettersState {
+  correct: Set<string>;
+  wrong: Set<string>;
+  exists: Set<string>;
+  correctMap: Map<number, string>;
+  wrongPositions: Map<number, Set<string>>;
+}
+
+interface ViolationHardModeProps {
+  guess: string;
+  lettersState: React.RefObject<LettersState>
+}
+
 export default function Page() {
   const [word, setWord] = useState("")
   const [guess, setGuess] = useState("")
   const [attempts, setAttempts] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
   const [isLose, setIsLose] = useState(false)
-  const [lettersState, setLettersState] = useState({
-    correct: new Set<string>(),
-    wrong: new Set<string>(),
-    exists: new Set<string>(),
-  });
   const [mode, setMode] = useState<"daily" | "free" | "challenge">("daily");
   const [difficulty, setDifficulty] = useState<"easy" | "hard">("easy");
   const [statistics, setStatistics] = useState({
@@ -46,6 +54,14 @@ export default function Page() {
   const [showAlert, setShowAlert] = useState<string | null>(null)
   const [showStatistics, setShowStatistics] = useState(false)
   const [showCreateChallenge, setShowCreateChallenge] = useState(false)
+
+  const lettersState = useRef({
+    correct: new Set<string>(),
+    wrong: new Set<string>(),
+    exists: new Set<string>(),
+    correctMap: new Map<number, string>(),
+    wrongPositions: new Map<number, Set<string>>()
+  });
 
   const limitAttempts = 6;
   const lose = !isCorrect && attempts.length >= limitAttempts;
@@ -103,12 +119,13 @@ export default function Page() {
       setAttempts([]);
       setIsCorrect(false);
       setIsLose(false);
-      setLettersState(prev => ({
-        ...prev,
+      lettersState.current = {
         correct: new Set(),
         wrong: new Set(),
         exists: new Set(),
-      }));
+        correctMap: new Map<number, string>(),
+        wrongPositions: new Map<number, Set<string>>()
+      };
     };
 
     if (mode === "daily") {
@@ -117,11 +134,14 @@ export default function Page() {
         ultimoJogo,
         attempts: savedAttempts = [],
         isCorrect: savedCorrect = false,
+        difficulty: savedDifficulty,
         endGame = false,
         letterHints: {
           correct = [],
           wrong = [],
-          exists = []
+          exists = [],
+          correctMap = [],
+          wrongPositions = []
         } = {}
       } = stored || {};
 
@@ -129,15 +149,23 @@ export default function Page() {
       if (!ultimoJogo) setShowHowToPlay(true);
 
       if (ultimoJogo === today) {
+        if (savedDifficulty) setDifficulty(savedDifficulty);
         setAttempts(savedAttempts);
         setIsCorrect(savedCorrect);
+
         if (savedCorrect) setShowStatistics(true);
-        setLettersState(prev => ({
-          ...prev,
+
+        lettersState.current = {
           correct: new Set(correct),
           wrong: new Set(wrong),
           exists: new Set(exists),
-        }));
+          correctMap: new Map(correctMap),
+          wrongPositions: new Map(
+            (wrongPositions as Array<[number, string[]]>).map(
+              ([pos, letras]) => [pos, new Set(letras)]
+            )
+          )
+        };
       } else {
         const reset = {
           ultimoJogo: today,
@@ -151,9 +179,9 @@ export default function Page() {
         resetState();
       }
 
-      setWord(generateDailyWord(difficulty));
+      setWord(generateDailyWord());
     } else {
-      const newWord = mode === "free" ? generateRandomWord(difficulty) : "";
+      const newWord = mode === "free" ? generateRandomWord() : "";
       setWord(newWord);
       resetState();
     }
@@ -169,16 +197,21 @@ export default function Page() {
 
     // 🛑 Bloqueia se palavra não estiver na lista
     if (checkWords(palpiteNormalizado)) {
-      setShowAlert('Palavra não reconhecida');
-      setTimeout(() => {
-        setShowAlert(null); // ou '' dependendo de como você esconde o alerta
-      }, 3000); // 3 segundos
+      showAlertActive('Palavra não reconhecida');
       return;
     }
 
     if (attempts.includes(palpiteOriginal) || attempts.includes(word)) {
       setGuess("");
       return;
+    }
+
+    if (difficulty === "hard") {
+      const erro = violationHardMode({ guess: palpiteOriginal, lettersState });
+      if (erro) {
+        showAlertActive(erro);
+        return;
+      }
     }
 
     const acertou = palpiteNormalizado === palavraNormalizada;
@@ -191,6 +224,8 @@ export default function Page() {
 
     const novasTentativas = [...attempts, palavraFinal];
     setAttempts(novasTentativas);
+
+    updateLetterStates(palpiteNormalizado, palpiteOriginal, palavraNormalizada);
 
     if (acertou) {
       setIsCorrect(true);
@@ -211,68 +246,103 @@ export default function Page() {
       }
     }
 
-    // Atualiza os sets de letras
-    const novasLetrasCorretas = new Set(lettersState.correct);
-    const novasLetrasIncorretas = new Set(lettersState.wrong);
-    const novasLetrasExistentes = new Set(lettersState.exists);
-
-    for (let i = 0; i < palpiteNormalizado.length; i++) {
-      const letraNormalizada = palpiteNormalizado[i];
-      const letraOriginal = palpiteOriginal[i];
-
-      if (palavraNormalizada.includes(letraNormalizada)) {
-        if (palavraNormalizada[i] === letraNormalizada) {
-          novasLetrasCorretas.add(letraOriginal);
-        } else {
-          novasLetrasExistentes.add(letraOriginal);
-        }
-      } else {
-        novasLetrasIncorretas.add(letraOriginal);
-      }
-    }
-
-    setLettersState(prev => ({
-      ...prev,
-      correct: novasLetrasCorretas,
-      wrong: novasLetrasIncorretas,
-      exists: novasLetrasExistentes,
-    }));
+    setGuess("");
 
     if (mode === "daily") {
-      const letterHints = {
-        attempts: novasTentativas,
-        correct: [...novasLetrasCorretas],
-        wrong: [...novasLetrasIncorretas],
-        exists: [...novasLetrasExistentes]
-      };
-
       saveGameState({
-        attempts: letterHints.attempts,
+        attempts: novasTentativas,
+        difficulty,
         letterHints: {
-          correct: letterHints.correct,
-          wrong: letterHints.wrong,
-          exists: letterHints.exists
+          correct: [...lettersState.current.correct],
+          wrong: [...lettersState.current.wrong],
+          exists: [...lettersState.current.exists],
+          correctMap: Array.from(lettersState.current.correctMap.entries()),
         }
       });
     }
-
-    setGuess("");
   };
+
+  const updateLetterStates = (
+    guessNorm: string,
+    guessOrig: string,
+    wordNorm: string
+  ) => {
+    const { correct, wrong, exists, correctMap, wrongPositions } = lettersState.current;
+
+    for (let i = 0; i < guessNorm.length; i++) {
+      const letraNorm = guessNorm[i];
+      const letraOrig = guessOrig[i];
+
+      if (wordNorm.includes(letraNorm)) {
+        if (wordNorm[i] === letraNorm) {
+          correct.add(letraOrig);
+          correctMap.set(i, letraOrig);
+        } else {
+          exists.add(letraOrig);
+          if (!wrongPositions.has(i)) {
+            wrongPositions.set(i, new Set());
+          }
+          wrongPositions.get(i)!.add(letraOrig);
+        }
+      } else {
+        wrong.add(letraOrig);
+      }
+    }
+  };
+
+  function violationHardMode({guess, lettersState}: ViolationHardModeProps): string | null {
+    const upperGuess = guess.toUpperCase();
+
+    const { correctMap, exists, wrongPositions, wrong } = lettersState.current;
+
+    // 1. Letras verdes na posição certa
+    for (let [index, letraEsperada] of correctMap.entries()) {
+      if (upperGuess[index] !== letraEsperada) {
+        return `Você precisa manter a letra "${letraEsperada}" na posição ${index + 1}.`;
+      }
+    }
+
+    // 2. Letras amarelas devem ser usadas
+    for (let letra of exists) {
+      if (!upperGuess.includes(letra)) {
+        return `Você precisa reutilizar a letra "${letra}" no palpite.`;
+      }
+    }
+
+    // 3. Letras não podem estar nas posições já marcadas como erradas (amarelas)
+    for (let i = 0; i < upperGuess.length; i++) {
+      const letra = upperGuess[i];
+      const proibidas = wrongPositions.get(i);
+      if (proibidas && proibidas.has(letra)) {
+        return `A letra "${letra}" não pode estar na posição ${i + 1}.`;
+      }
+    }
+
+    // 4. Letras marcadas como erradas (cinzas) não podem mais ser usadas
+    for (let letra of upperGuess) {
+      if (wrong.has(letra)) {
+        return `A letra "${letra}" não está na palavra e não pode ser usada.`;
+      }
+    }
+
+    return null;
+  }
 
   const restartGame = (len?: number) => {
     setGuess("");
     setIsCorrect(false);
     setIsLose(false)
     setAttempts([]);
-    setLettersState(prev => ({
-      ...prev,
+    lettersState.current = {
       correct: new Set(),
       wrong: new Set(),
       exists: new Set(),
-    }));
+      correctMap: new Map<number, string>(),
+      wrongPositions: new Map<number, Set<string>>()
+    };
 
     if (mode === 'free' || mode === 'challenge') {
-      const novaPalavra = generateRandomWord(difficulty, len)
+      const novaPalavra = generateRandomWord(len)
       setWord(novaPalavra);
 
       getAnalyticsIfSupported().then((analytics) => {
@@ -284,6 +354,15 @@ export default function Page() {
       });
     }
   }
+
+  const handleChangeDifficulty = (newDifficulty: any) => {
+    if (mode === 'daily' && attempts.length > 0) {
+      showAlertActive('Você só pode trocar a dificuldade no início do jogo diário.');
+      return;
+    }
+
+    setDifficulty(newDifficulty);
+  };
   
   const feedbackByAttempt: Record<number, string> = {
     1: "UAU!",
@@ -295,20 +374,23 @@ export default function Page() {
   };
   
   const getFeedback = (attempts: number) => feedbackByAttempt[attempts] || "Boa!";
+
+  const showAlertActive = (text: string) => {
+    setShowAlert(text);
+    setTimeout(() => setShowAlert(null), 3000);
+  }
   
   return (
     <main className="h-screen flex flex-col justify-between">
-      <Header 
-        wordLength={wordLength} 
-        setShowCreateChallenge={setShowCreateChallenge} 
-        setWordLength={setWordLength} 
-        setShowStatistics={setShowStatistics} 
-        howToPlay={setShowHowToPlay} 
-        restartGame={restartGame} 
-        mode={mode} 
+      <Header
+        setShowCreateChallenge={setShowCreateChallenge}
+        setShowStatistics={setShowStatistics}
+        howToPlay={setShowHowToPlay}
+        restartGame={restartGame}
+        mode={mode}
         setMode={setMode}
         difficulty={difficulty}
-        setDifficulty={setDifficulty}
+        handleChangeDifficulty={handleChangeDifficulty}
       />
 
       <div className="flex-1 min-h-0 overflow-y-auto container mx-auto px-2 flex justify-center">
@@ -371,7 +453,7 @@ export default function Page() {
                     )}
                     {mode === "daily" && (
                       <p className="font-sans">
-                        Ontem era: <strong>{getYesterdayWord(difficulty)}</strong>
+                        Ontem era: <strong>{getYesterdayWord()}</strong>
                       </p>
                     )}
                   </>
@@ -381,7 +463,7 @@ export default function Page() {
           )}
 
           {/* Grid de letras */}
-          <div className="grid gap-2 sm:gap-2 mb-2 w-full place-items-center">
+          <div className="grid gap-2 sm:gap-2 mb-8 w-full place-items-center">
             {word.length === 0 ? (
               // Mostra skeleton enquanto `word` não está carregada
               Array.from({ length: limitAttempts }).map((_, rowIndex) => (
@@ -453,9 +535,9 @@ export default function Page() {
 
           {/* Teclado */}
           {renderKeyboard({
-            correctLetters: lettersState.correct,
-            existingLetters: lettersState.exists,
-            wrongLetters: lettersState.wrong,
+            correctLetters: lettersState.current.correct,
+            existingLetters: lettersState.current.exists,
+            wrongLetters: lettersState.current.wrong,
             setGuess,
             isCorrect,
             lose: isLose,

@@ -1,6 +1,14 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+import { Righteous } from 'next/font/google';
+
+const righteous = Righteous({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-righteous',
+});
+
 import AdSense from "../components/ad-sense";
 
 export const metadata: Metadata = {

@@ -10,12 +10,12 @@ const renderLetter = (
   const letra = tentativa[letraIndex];
   
   const highlightClasses =
-    "font-bold flex items-center justify-center font-space transition-none text-white rounded-sm";
+    "font-bold flex items-center justify-center font-righteous transition-none text-white rounded-sm";
 
   const dynamicStyle = {
     width: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
     height: `clamp(36px, ${Math.min(16, 80 / word.length)}vw, 72px)`,
-    fontSize: `2rem`
+    fontSize: `2.3rem`
   };
 
   if (!letra) {
@@ -53,11 +53,11 @@ const renderLetter = (
 
     const status = statusArray[letraIndex];
     if (status === "correct") {
-      colorClasses = "animate-flip bg-[#22c55e80] border-2 border-[#22c55eb3] text-white"
+      colorClasses = "animate-flip bg-[#008080] border-2 border-[#008080] text-white"
     } else if (status === "present") {
-      colorClasses = "animate-flip bg-[#eab30880] border-2 border-[#eab30880] text-white";
+      colorClasses = "animate-flip bg-[#D97706] border-2 border-[#D97706] text-white";
     } else {
-      colorClasses = "animate-flip bg-[#6b728080] border-2 border-[#9ca3afb3] text-white";
+      colorClasses = "animate-flip bg-[#4B5563] border-2 border-[#4B5563] text-white";
     }
   }
 

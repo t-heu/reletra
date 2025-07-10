@@ -1,9 +1,7 @@
-import dictionary from "../words.json";
-import easyWords from "../easyWords.json";
+import words_easy from "../words_easy.json";
 
 // O dicionário agora é um array gigante
-const DICTIONARY: string[] = (dictionary as { words: string[] }).words;
-const EASY_WORDS: string[] = (easyWords as { words: string[] }).words;
+const WORDS_EASY: string[] = (words_easy as { words: string[] }).words;
 
 // Filtra palavras de 3 a 6 letras
 const getWordsOfValidLength = (source: string[]): string[] => {
@@ -15,12 +13,8 @@ const getWordsOfLength = (length: number, source: string[]): string[] => {
   return source.filter(word => word.length === length);
 };
 
-const getSourceByDifficulty = (difficulty: string): string[] => {
-  return difficulty === "easy" ? EASY_WORDS : DICTIONARY;
-};
-
 // Palavra do dia baseada no tamanho e data
-export const generateDailyWord = (difficulty: string): string => {
+export const generateDailyWord = (): string => {
   const today = new Date();
   const dayOfYear = Math.floor(
     (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24)
@@ -29,15 +23,15 @@ export const generateDailyWord = (difficulty: string): string => {
   const lengths = [3, 4, 5, 6];
   const length = lengths[dayOfYear % lengths.length];
 
-  const source = getSourceByDifficulty(difficulty);
+  const source = WORDS_EASY;
   const words = getWordsOfLength(length, source);
 
   return (words[dayOfYear % words.length]).toUpperCase();
 };
 
 // Palavra aleatória de 3 a 6 letras
-export const generateRandomWord = (difficulty: string, length?: number): string => {
-  const source = getSourceByDifficulty(difficulty);
+export const generateRandomWord = (length?: number): string => {
+  const source = WORDS_EASY;
   let words: string[];
 
   if (length) {
@@ -58,14 +52,14 @@ const getDayOfYear = (date: Date): number => {
   );
 };
 
-export const getYesterdayWord = (difficulty: string, daysAgo: number = 1): string => {
+export const getYesterdayWord = (daysAgo: number = 1): string => {
   const lengths = [3, 4, 5, 6];
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - daysAgo);
 
   const dayOfYear = getDayOfYear(yesterday);
   const length = lengths[dayOfYear % lengths.length];
-  const source = getSourceByDifficulty(difficulty);
+  const source = WORDS_EASY;
   const words = getWordsOfLength(length, source);
 
   return (words[dayOfYear % words.length]).toUpperCase();

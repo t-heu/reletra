@@ -36,13 +36,13 @@ export function Key({
   let textColor = "text-[#eee]";
 
   if (correctLetters.has(letra)) {
-    colorClasses = "bg-[#22c55e80] border-2 border-[#22c55eb3]";
+    colorClasses = "bg-[#008080] border-2 border-[#008080]";
     textColor = "text-[#eee]";
   } else if (existingLetters.has(letra)) {
-    colorClasses = "bg-[#eab30880] border-2 border-[#eab30880]";
+    colorClasses = "bg-[#D97706] border-2 border-[#D97706]";
     textColor = "text-[#eee]";
   } else if (wrongLetters.has(letra)) {
-    colorClasses = "bg-[#6b728080] border-2 border-[#9ca3afb3]";
+    colorClasses = "bg-[#4B5563] border-2 border-[#4B5563]";
     textColor = "text-[#eee]";
   }
 
@@ -63,7 +63,7 @@ export function Key({
     (isDelete && guess.length === 0);
 
   const baseClasses = `
-    rounded font-bold active:scale-95 transition-all
+    rounded font-righteous active:scale-95 transition-all
     flex items-center justify-center
     ${colorClasses} ${textColor}
     disabled:opacity-50 disabled:cursor-not-allowed

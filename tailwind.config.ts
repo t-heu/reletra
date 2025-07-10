@@ -12,7 +12,8 @@ const config: Config = {
   	extend: {
 			fontFamily: {
 				roboto: ['Roboto', 'sans-serif'],
-				montserrat: ["Montserrat", 'sans-serif']
+				montserrat: ["Montserrat", 'sans-serif'],
+				righteous: ['Righteous', 'sans-serif'],
     	},
   		colors: {
   			background: 'hsl(var(--background))',

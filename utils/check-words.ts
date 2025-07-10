@@ -1,21 +1,45 @@
-import validWords from "../words.json";
-import { removeAccents } from "../utils/remove-accents"
+import { removeAccents } from "../utils/remove-accents";
+import words_easy from "../words_easy.json";
 
-const wordList = (validWords as {words: string[]}).words;
+// Extrair os arrays dos arquivos JSON
+const WORDS_EASY: string[] = (words_easy as { words: string[] }).words;
 
-export function checkWords(word: string) {
-  const normalizedWordList = wordList.map(w => removeAccents(w.toUpperCase()));
-  if (!normalizedWordList.includes(word)) {
-    return true;
+// Juntar os dois arrays em um só
+const MERGED_DICTIONARY: string[] = WORDS_EASY;
+
+const ALL_WORDS: { words: string[] } = {
+  words: MERGED_DICTIONARY
+};
+
+// ✅ Pré-processa a lista só uma vez
+const normalizedWordSet = new Set(
+  (ALL_WORDS as { words: string[] }).words.map(w =>
+    removeAccents(w.toUpperCase())
+  )
+);
+
+// Usar essa original com acentos ainda para exibir ao jogador:
+const wordList = (ALL_WORDS as { words: string[] }).words;
+
+const normalizedWordMap = new Map<string, string>();
+
+wordList.forEach(word => {
+  const normalized = removeAccents(word.toUpperCase());
+  if (!normalizedWordMap.has(normalized)) {
+    normalizedWordMap.set(normalized, word);
   }
+});
 
-  return false;
+/**
+ * Verifica se a palavra existe na lista normalizada
+ */
+export function checkWords(word: string) {
+  return !normalizedWordSet.has(word); // true se for inválida
 }
 
+/**
+ * Retorna a palavra original com acento
+ */
 export function wordWithAccent(word: string) {
-  const found = wordList.find(
-    w => removeAccents(w.toUpperCase()) === word
-  );
-
-  return found
+  return normalizedWordMap.get(word); // undefined se não achar
 }
